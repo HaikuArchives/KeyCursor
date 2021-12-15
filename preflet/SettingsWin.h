@@ -3,6 +3,8 @@
 #include "Preferences.h"
 
 class BView;
+class BSlider;
+class BCheckBox;
 class ModifierView;
 class ModifierBox;
 

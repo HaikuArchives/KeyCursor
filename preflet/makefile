@@ -8,8 +8,7 @@ SRCS = \
 	../src/Preferences.cpp \
 	SettingsWin.cpp
 RSRCS = KeyCursor.rsrc
-LIBS = be
-# stdc++.r4
+LIBS = be $(STDCPPLIBS)
 LIBPATHS =
 SYSTEM_INCLUDE_PATHS =
 LOCAL_INCLUDE_PATHS = ../src/

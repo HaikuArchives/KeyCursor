@@ -23,7 +23,7 @@ ModifierBox::ModifierBox(BRect frame, const char* label, uint32 modifier,
 
 	float right = 0;
 	float bottom;
-	BRect frame(10, 15, 10, 15);
+	BRect rect(10, 15, 10, 15);
 
 	fModifierViewList = new ModifierView*[5];
 
@@ -43,7 +43,7 @@ ModifierBox::ModifierBox(BRect frame, const char* label, uint32 modifier,
 		AddChild(fModifierViewList[i]);
 
 		right = max_c(right, fModifierViewList[i]->Frame().right);
-		frame.OffsetTo(frame.left, fModifierViewList[i]->Frame().bottom + 5);
+		rect.OffsetTo(rect.left, fModifierViewList[i]->Frame().bottom + 5);
 	}
 
 	bottom = fModifierViewList[5 - 1]->Frame().bottom;
