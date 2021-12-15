@@ -1,0 +1,62 @@
+Using a Keyboard as a Pointing Device
+By Nathan Schrenk -- <nschrenk@be.com>
+
+
+Have you ever tried to use a computer and found the mouse
+cursor frozen when you moved the mouse around? This has
+happened to me many times, perhaps because I've been doing
+some maintenance on my computer and have forgotten to plug
+the mouse in, or because I was using a keyboard/mouse/video
+switchbox to control multiple computers with one keyboard
+and mouse and the switchbox scewed up the synchronization
+between the PS/2 mouse and the computer.
+
+In these situations, I'd like to be able to control the cursor
+so that I can continue to use the machine. Unfortunately many
+programs aren't very usable without a mouse, among them
+applications and system components included with BeOS. So when
+the mouse stops working, I can't use the computer productively.
+One obvious solution is to enable the keyboard to emulate a
+mouse. One day, annoyed that BeOS did not provide a way to
+emulate a pointing device with the keyboard, I wrote an Input
+Server add-on named KeyCursor to do just that. You can
+download the source code at <ftp://ftp.be.com/pub/samples
+/input_server/KeyCursor.zip>. I think it works pretty well.
+
+KeyCursor has two parts:a BInputServerFilter subclass that
+watches the stream of keyboard events for the key presses
+that move the cursor around and generate mouse clicks, and
+a BInputServerDevice subclass that simulates a pointing
+device by generating movement and button events. For more
+information about how the Input Server works in general,
+and how the BInputServerFilter and BInputServerDevice
+classes work in particular, consult the Be Book's chapter
+on the Input Server. <http://www-classic.be.com/documentation
+/be_book/The%20Input%20Server/index.html>.
+
+If you examine the source code to KeyCursor, you'll find
+that the keys used to move the cursor and to generate button
+clicks are hardcoded. The arrow keys control the cursor
+and the space bar is used to click. Pressing the space bar
+while holding the shift key simulates clicking with the
+second mouse button. You can turn KeyCursor on and off by
+pressing and releasing the Option key (sometimes known as
+the Windows key). You'll know that it is activating or
+deactivating when you hear the system beep. If you don't
+like the default keys, you'll have to edit the code.
+
+I realize that this isn't very user friendly, but I haven't
+gotten around to making KeyCursor more configurable and
+writing a preference panel for it. If you feel like making
+KeyCursor easier to customize, I'd love to find an improved
+version on BeBits some day. As long as I'm dreaming, I'd
+like to see a version with a preference panel that allows
+the user to select which keys to use for activating KeyCursor,
+moving the cursor, simulating various button clicks, and
+changing cursor speed or acceleration.
+
+As with all code that Be has released under the Be Sample
+Code License, you can take the KeyCursor source code and
+modify it and redistribute your modified version as long as
+you honor the few requirements of the license. I hope you
+find KeyCursor useful for situations when you need it.
