@@ -6,7 +6,7 @@ SRCS = \
 	KeyCursorFilter.cpp \
 	Preferences.cpp
 RSRCS =
-LIBS = be _APP_
+LIBS = _APP_ be
 LIBPATHS =
 SYSTEM_INCLUDE_PATHS =
 LOCAL_INCLUDE_PATHS = 
