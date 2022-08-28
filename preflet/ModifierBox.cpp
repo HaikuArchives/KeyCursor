@@ -15,7 +15,7 @@ const ModifierBox::MaskListType ModifierBox::ModifierList[]=
 ////////////////////////////////////////////////////////////////////////////////
 
 ModifierBox::ModifierBox(BRect frame, const char* label, uint32 modifier,
-						uint32 button)
+						uint32 /*button*/)
 	: BBox(frame),
 	fDefaultModifier(0)
 {
