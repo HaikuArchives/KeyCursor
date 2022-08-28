@@ -52,7 +52,7 @@ KeyCursorDevice::~KeyCursorDevice()
 status_t KeyCursorDevice::InitCheck()
 {
 	input_device_ref* devices[2];
-	input_device_ref devRef = {	KEY_CURSOR_DEVICE_NAME,
+	input_device_ref devRef = {	(char*) KEY_CURSOR_DEVICE_NAME,
 								B_POINTING_DEVICE,
 								(void*) this };
 	devices[0] = &devRef;

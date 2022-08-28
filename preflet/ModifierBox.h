@@ -23,7 +23,7 @@ private:
 	struct MaskListType
 	{
 		uint32 mask;
-		char* label;
+		const char* label;
 	};
 
 	static const MaskListType ModifierList[];
