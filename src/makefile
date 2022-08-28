@@ -15,7 +15,7 @@ DEFINES =
 WARNINGS = ALL
 SYMBOLS =
 DEBUGGER =
-COMPILER_FLAGS = -Wall
+COMPILER_FLAGS = -Wall -Wextra -Wundef -Wshadow -Wmissing-declarations -Wredundant-decls
 LINKER_FLAGS =
 
 ## include the makefile-engine

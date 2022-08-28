@@ -86,6 +86,7 @@ filter_result KeyCursorFilter::Filter(BMessage* message, BList* /*outList*/)
 	{
 		case B_UNMAPPED_KEY_DOWN:
 		case B_UNMAPPED_KEY_UP:
+		{
 			// raw modifier state changes only concern us in toggle mode
 			if (!fToggleMode)
 			{
@@ -118,6 +119,7 @@ filter_result KeyCursorFilter::Filter(BMessage* message, BList* /*outList*/)
 				}
 				toggleModPressedLast = false;
 			}
+		}
 		break;
 
 		case B_KEY_DOWN:	// fall through
