@@ -15,8 +15,8 @@ DEFINES =
 WARNINGS = ALL
 SYMBOLS =
 DEBUGGER =
-COMPILER_FLAGS =
-LINKER_FLAGS = -s
+COMPILER_FLAGS = -Wall
+LINKER_FLAGS =
 
 ## include the makefile-engine
 include $(BUILDHOME)/etc/makefile-engine
