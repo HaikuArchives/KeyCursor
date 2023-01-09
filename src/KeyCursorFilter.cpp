@@ -51,6 +51,9 @@ KeyCursorFilter::KeyCursorFilter()
 
 KeyCursorFilter::~KeyCursorFilter()
 {
+	if (fPrefsThread != -1) {
+		kill_thread(fPrefsThread);
+	}
 }
 
 status_t KeyCursorFilter::InitCheck()
