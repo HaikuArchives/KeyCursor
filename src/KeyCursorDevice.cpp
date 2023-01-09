@@ -10,6 +10,9 @@
 #include <Message.h>
 #include <View.h>	// for B_PRIMARY_MOUSE_BUTTON, etc.
 #include <stdio.h>
+#include <syslog.h>
+
+// #define DEBUG_KEYCURSOR
 
 //------------------------------------------------------------------------------
 
@@ -42,11 +45,20 @@ KeyCursorDevice::KeyCursorDevice()
 	fClickCount = 0;
 	fClickedButton = 0;
 	fAcceleration = fPrefs.GetAcceleration() / 1000000.0f;
+
+	status_t res = get_click_speed(&fClickSpeed);
+	if (res != B_OK) {
+		syslog(LOG_WARNING, "KeyCursorDevice(): using default value for fClickSpeed.");
+		fClickSpeed = 100000; // 0.1 secs
+	}
 }
 
 KeyCursorDevice::~KeyCursorDevice()
 {
-	// XXX: need to quit thread, etc.
+	if (fThreadID != -1) {
+		// just in case.
+		kill_thread(fThreadID);
+	}
 }
 
 status_t KeyCursorDevice::InitCheck()
@@ -89,6 +101,7 @@ status_t KeyCursorDevice::Stop(const char* /*device*/, void* /*cookie*/)
 		delete_sem(quitSem);
 		delete_port(fPortID);
 		fPortID = -1;
+		fThreadID = -1;
 	}
 	return B_OK;
 }
@@ -97,6 +110,16 @@ status_t
 KeyCursorDevice::Control(const char* device, void* cookie, uint32 code, BMessage* message)
 {
 	BInputServerDevice::Control(device, cookie, code, message);
+	if (code == B_CLICK_SPEED_CHANGED) {
+		status_t res = get_click_speed(&fClickSpeed);
+		if (res != B_OK or fClickSpeed < 100000) {
+			syslog(LOG_WARNING, "KeyCursorDevice::Control(): using default value for fClickSpeed.");
+			fClickSpeed = 100000; // 0.1 secs should be the minumum value according to the BeBook.
+		}
+#ifdef DEBUG_KEYCURSOR
+		else syslog(LOG_INFO, "KeyCursorDevice: fClickSpeed = %d", fClickSpeed);
+#endif
+	}
 	return B_OK;
 }
 
@@ -181,21 +204,18 @@ void KeyCursorDevice::ProcessMessage(int32 what, int32 data)
 
 		case BUTTON_DOWN:
 		{
-			bigtime_t click_speed;
-			get_click_speed(&click_speed);
 			char clicked = (char) data;
-
-			if (clicked != fClickedButton)
+#ifdef DEBUG_KEYCURSOR
+			syslog(LOG_INFO, "clicked = %d", clicked);
+#endif
+			if ((clicked != fClickedButton) || ((now - fLastClick) > fClickSpeed))
 			{
+				// a different button was clicked, or not fast enough as to count as a double-click.
 				fClickCount = 1;
 				fClickedButton = clicked;
 			}
-			else
-			{
-				if ((now - fLastClick) < click_speed)
-					fClickCount++;
-				else
-					fClickCount = 1;
+			else {
+				fClickCount++;
 			}
 
 			fLastClick = now;
@@ -205,8 +225,10 @@ void KeyCursorDevice::ProcessMessage(int32 what, int32 data)
 			{
 				case 1:	buttonMask = B_PRIMARY_MOUSE_BUTTON; break;
 				case 2:	buttonMask = B_SECONDARY_MOUSE_BUTTON; break;
-				case 3:	buttonMask = B_TERTIARY_MOUSE_BUTTON; break;
-				default: buttonMask = 0; break;
+				default:
+					syslog(LOG_ERR, "KeyCursorDevice::ProcessMessage(): Invalid fClickedButton = %d", fClickedButton);
+					buttonMask = 0;
+				break;
 			}
 
 			BMessage* event = new BMessage(B_MOUSE_DOWN);
@@ -215,16 +237,15 @@ void KeyCursorDevice::ProcessMessage(int32 what, int32 data)
 			event->AddInt32("clicks", fClickCount);
 			event->AddInt32("x", 0);
 			event->AddInt32("y", 0);
+#ifdef DEBUG_KEYCURSOR
+			syslog(LOG_INFO, "KeyCursorDevice: fClickCount = %d", fClickCount);
+#endif
 			EnqueueMessage(event);
 		}
 		break;
 
 		case BUTTON_UP:
 		{
-			fClickedButton = 0;
-			fLastClick = 0;
-			fClickCount = 0;
-
 			BMessage* event = new BMessage(B_MOUSE_UP);
 			event->AddInt64("when", now);
 			event->AddInt32("x", 0);
@@ -284,9 +305,14 @@ void KeyCursorDevice::GenerateMotionEvent()
 		{
 			case 1 : buttonMask = B_PRIMARY_MOUSE_BUTTON;   break;
 			case 2 : buttonMask = B_SECONDARY_MOUSE_BUTTON; break;
-			case 3 : buttonMask = B_TERTIARY_MOUSE_BUTTON;  break;
 			default: buttonMask = 0;                        break;
 		}
+
+#ifdef DEBUG_KEYCURSOR
+		if (fClickedButton) {
+			syslog(LOG_INFO, "KeyCursorDevice: fClickedButton = %d", fClickedButton);
+		}
+#endif
 
 		BMessage* event = new BMessage(B_MOUSE_MOVED);
 		event->AddInt64("when", now);
@@ -299,7 +325,6 @@ void KeyCursorDevice::GenerateMotionEvent()
 		{
 			event = new BMessage(B_MOUSE_WHEEL_CHANGED);
 			event->AddInt64("when", now);
-//			event->AddFloat("be:wheel_delta_x", w);
 			event->AddFloat("be:wheel_delta_y", w);
 			EnqueueMessage(event);
 		}

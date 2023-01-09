@@ -120,6 +120,7 @@ private:
 
 	bigtime_t	fTickInterval;
 	bigtime_t	fLastClick;
+	bigtime_t	fClickSpeed;
 	thread_id	fThreadID;
 	port_id		fPortID;
 	float		fAcceleration;
