@@ -1,0 +1,12 @@
+1	English	application/x-vnd.OscarL-KeyCursorSettings	77331839
+Command	ModifierBox		ALT
+Min	SettingsWindow		Min
+Control	ModifierBox		STRG
+Menu	ModifierBox		Menü
+KeyCursor settings	SettingsWindow		KeyCursor Einstellungen
+Shift	ModifierBox		Shift
+Acceleration	SettingsWindow		Beschleunigung
+Option	ModifierBox		OPT
+Max	SettingsWindow		Max
+Toggle keys	SettingsWindow		Ein-/Ausschalttasten
+Enable KeyCursor	SettingsWindow		KeyCursor aktivieren

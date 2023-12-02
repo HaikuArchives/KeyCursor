@@ -18,8 +18,7 @@ class ModifierView;
 class ModifierBox : public BInvoker, public BBox
 {
 public:
-					ModifierBox(BRect frame, const char* label = 0, uint32 modifier = 0,
-						uint32 button = 0);
+					ModifierBox(const char* label = 0, uint32 modifier = 0, uint32 button = 0);
 					~ModifierBox();
 
 	virtual void 	MessageReceived(BMessage* message);
@@ -35,7 +34,7 @@ public:
 private:
 	struct MaskListType
 	{
-		uint32 mask;
+		uint32		mask;
 		const char* label;
 	};
 

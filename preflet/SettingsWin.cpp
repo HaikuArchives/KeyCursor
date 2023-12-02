@@ -10,7 +10,10 @@
 
 #include <Application.h>
 #include <Box.h>
+#include <Catalog.h>
+#include <LayoutBuilder.h>
 #include <Screen.h>
+#include <SeparatorView.h>
 #include <Slider.h>
 #include <String.h>
 #include <TextView.h>
@@ -23,73 +26,53 @@
 #include <stdlib.h>
 
 
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "SettingsWindow"
+
 SettingsWin::SettingsWin()
 	:
-	BWindow(BRect(100, 100, 400, 300), "KeyCursor Settings", B_TITLED_WINDOW,
-		B_ASYNCHRONOUS_CONTROLS | B_NOT_RESIZABLE | B_NOT_ZOOMABLE)
+	BWindow(BRect(100, 100, 500, 300), B_TRANSLATE("KeyCursor settings"), B_TITLED_WINDOW,
+		B_ASYNCHRONOUS_CONTROLS | B_NOT_RESIZABLE | B_NOT_ZOOMABLE | B_AUTO_UPDATE_SIZE_LIMITS)
 {
-	fBGView = new BView(BRect(Bounds()), "", B_FOLLOW_ALL_SIDES, B_WILL_DRAW);
-	fBGView->SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
-	AddChild(fBGView);
-
-	fEnabled = new BCheckBox(
-		BRect(10, 5, 10, 10), "fEnabled", "Enable KeyCursor", new BMessage(ENABLED_CHANGED));
+	fEnabled = new BCheckBox("enable", B_TRANSLATE("Enable KeyCursor"),
+		new BMessage(ENABLED_CHANGED));
 	fEnabled->SetValue(fPrefs.GetEnabled());
-	fEnabled->ResizeToPreferred();
-	fBGView->AddChild(fEnabled);
-
 	fEnabled->MakeFocus(true);
 
-	float right;
-	float bottom;
-	BRect frame;
-
-	frame = BRect(10, fEnabled->Frame().bottom + 10, 10, fEnabled->Frame().bottom + 10);
-
-	fModBox = new ModifierBox(
-		frame, "Toggle Keys", fPrefs.GetToggleModMask(), fPrefs.GetClickKeyMask());
+	fModBox = new ModifierBox(B_TRANSLATE("Toggle keys"), fPrefs.GetToggleModMask(),
+		fPrefs.GetClickKeyMask());
 	fModBox->SetDefaultModifierMask(fPrefs.GetDefaultClickKeyMask());
-
 	fModBox->SetMessage(new BMessage(TOGGLE_CHANGED));
 	fModBox->SetTarget(this);
-	fBGView->AddChild(fModBox);
-
 	fModBox->SetEnabled(fPrefs.GetEnabled());
 
-	bottom = fModBox->Frame().bottom;
-	right = fModBox->Frame().right;
-
-	fAccelSlider
-		= new BSlider(BRect(10, fModBox->Frame().bottom + 10, 10, fModBox->Frame().bottom + 10),
-			"accel_slider", "Acceleration Factor", new BMessage(ACCEL_CHANGED), 0, 40);
+	fAccelSlider = new BSlider("accel_slider", B_TRANSLATE("Acceleration"),
+			new BMessage(ACCEL_CHANGED), 0, 40, B_HORIZONTAL);
 
 	fAccelSlider->SetKeyIncrementValue(10);
 	fAccelSlider->SetHashMarks(B_HASH_MARKS_BOTTOM);
 	fAccelSlider->SetHashMarkCount(5);
 	fAccelSlider->SetValue(fPrefs.GetAcceleration());
-	fAccelSlider->SetLimitLabels("Mix", "Max");
-
-	fAccelSlider->ResizeToPreferred();
-	fAccelSlider->ResizeTo(fModBox->Frame().Width() - 2, fAccelSlider->Frame().Height());
-
-	fBGView->AddChild(fAccelSlider);
-
+	fAccelSlider->SetLimitLabels(B_TRANSLATE("Min"), B_TRANSLATE("Max"));
 	fAccelSlider->SetEnabled(fPrefs.GetEnabled());
 
-	bottom = fAccelSlider->Frame().bottom;
-	ResizeTo(right + 10, bottom);
+	BFont font = *be_plain_font;
+	fAccelSlider->SetExplicitMinSize(
+		BSize(font.StringWidth("Quite a long string as window min width"),B_SIZE_UNSET));
 
-	MoveTo(fPrefs.WindowCorner());
+	BLayoutBuilder::Group<>(this, B_VERTICAL)
+		.AddGroup(B_VERTICAL)
+			.SetInsets(B_USE_WINDOW_INSETS, B_USE_WINDOW_INSETS, B_USE_WINDOW_INSETS, 0)
+			.Add(fEnabled)
+		.End()
+		.Add(new BSeparatorView(B_HORIZONTAL))
+		.AddGroup(B_VERTICAL)
+			.SetInsets(B_USE_WINDOW_INSETS, 0, B_USE_WINDOW_INSETS, B_USE_WINDOW_INSETS)
+			.Add(fModBox)
+			.Add(fAccelSlider)
+		.End();
 
-	// Code to make sure that the window doesn't get drawn off screen...
-	{
-		BScreen screen;
-
-		if (!(screen.Frame().right >= Frame().right && screen.Frame().bottom >= Frame().bottom)) {
-			MoveTo((screen.Frame().right - Bounds().right) * 0.5,
-				(screen.Frame().bottom - Bounds().bottom) * 0.5);
-		}
-	}
+	CenterOnScreen();
 }
 
 
