@@ -1,4 +1,4 @@
-/*
+ /*
  * KeyCursor.h
  *
  *	KeyCursor is an input_server filter add-on and an input_server
@@ -13,10 +13,18 @@
  *
  *	Copyright 2000, Be Incorporated. All Rights Reserved.
  *	This file may be used under the terms of the Be Sample Code License.
+ *
+ *  Copyright 2004-2023, HaikuArchives Team
+ *  Distributed under the terms of the MIT License.
+ *
+ *  Authors:
+ * 		Nathan Schrenk
+ * 		Thomas Thiriez (code from his EasyMove app)
+ *		Oscar Lesta
+ *		Humdinger
  */
-
-#ifndef _KEY_CURSOR_H_
-#define _KEY_CURSOR_H_
+#ifndef KEY_CURSOR_H
+#define KEY_CURSOR_H
 
 #include <add-ons/input_server/InputServerFilter.h>
 #include <add-ons/input_server/InputServerDevice.h>
@@ -56,79 +64,77 @@ extern "C" _EXPORT BInputServerFilter* instantiate_input_filter();
 class KeyCursorFilter : public BInputServerFilter
 {
 public:
-						KeyCursorFilter();
-	virtual 			~KeyCursorFilter();
+							KeyCursorFilter();
+	virtual 				~KeyCursorFilter();
 
-	virtual	status_t	InitCheck();
+	virtual	status_t		InitCheck();
 	virtual	filter_result	Filter(BMessage* message, BList* outList);
 
 private:
+			void			SendMessageToDevice(int32 what, int32 data = 0);
 
-	void		SendMessageToDevice(int32 what, int32 data = 0);
+			// This thread will wait for preference's changes.
+			static int32	PrefsThreadFunc(void* cookie);
 
-	// This thread will wait for preference's changes.
-	static int32 PrefsThreadFunc(void* cookie);
+			thread_id 		fPrefsThread;
 
-	thread_id fPrefsThread;
+			port_id			fPortID;
 
-	port_id		fPortID;
+			uint32			fNecessaryMods;
+			uchar			fButtonPressed;
+			bool			fLeftPressed;
+			bool			fRightPressed;
+			bool			fUpPressed;
+			bool			fDownPressed;
+			bool			fWheelUpPressed;
+			bool			fWheelDownPressed;
+			bool			fToggleMode;
+			bool			fToggleOn;
 
-	uint32		fNecessaryMods;
-	uchar		fButtonPressed;
-	bool		fLeftPressed;
-	bool		fRightPressed;
-	bool		fUpPressed;
-	bool		fDownPressed;
-	bool		fWheelUpPressed;
-	bool		fWheelDownPressed;
-	bool		fToggleMode;
-	bool		fToggleOn;
-
-	Preferences fPrefs;
+			Preferences 	fPrefs;
 };
+
 
 class KeyCursorDevice : public BInputServerDevice
 {
 public:
-						KeyCursorDevice();
-	virtual				~KeyCursorDevice();
+							KeyCursorDevice();
+	virtual					~KeyCursorDevice();
 
-	virtual status_t	InitCheck();
-	virtual status_t	SystemShuttingDown();
+	virtual status_t		InitCheck();
+	virtual status_t		SystemShuttingDown();
 
-	virtual status_t	Start(const char* device, void* cookie);
-	virtual	status_t	Stop(const char* device, void* cookie);
-	virtual status_t	Control(const char* device,
-								void*       cookie,
-								uint32      code,
-								BMessage*   message);
+	virtual status_t		Start(const char* device, void* cookie);
+	virtual	status_t		Stop(const char* device, void* cookie);
+	virtual status_t		Control(const char* device,
+									void*       cookie,
+									uint32      code,
+									BMessage*   message);
 
 private:
+		static	int32		ThreadFunc(void* castToKeyCursorDevice);
+				void		MessageLoop();
+				void		ProcessMessage(int32 what, int32 data);
+				void		GenerateMotionEvent();
 
-	static	int32		ThreadFunc(void* castToKeyCursorDevice);
-			void		MessageLoop();
-			void		ProcessMessage(int32 what, int32 data);
-			void		GenerateMotionEvent();
+				bigtime_t 	fLeftTime;
+				bigtime_t 	fRightTime;
+				bigtime_t 	fUpTime;
+				bigtime_t 	fDownTime;
 
-	bigtime_t 	fLeftTime;
-	bigtime_t 	fRightTime;
-	bigtime_t 	fUpTime;
-	bigtime_t 	fDownTime;
+				bigtime_t	fWheelUpTime;
+				bigtime_t	fWheelDownTime;
 
-	bigtime_t	fWheelUpTime;
-	bigtime_t	fWheelDownTime;
+				bigtime_t	fTickInterval;
+				bigtime_t	fLastClick;
+				bigtime_t	fClickSpeed;
+				thread_id	fThreadID;
+				port_id		fPortID;
+				float		fAcceleration;
+				int32		fClickCount;
+				char		fClickedButton;
 
-	bigtime_t	fTickInterval;
-	bigtime_t	fLastClick;
-	bigtime_t	fClickSpeed;
-	thread_id	fThreadID;
-	port_id		fPortID;
-	float		fAcceleration;
-	int32		fClickCount;
-	char		fClickedButton;
-
-	int32 modifiers;
-	Preferences fPrefs;
+				Preferences fPrefs;
 };
 
-#endif // _KEY_CURSOR_H_
+#endif // KEY_CURSOR_H
