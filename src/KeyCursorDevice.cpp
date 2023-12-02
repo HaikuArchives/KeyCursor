@@ -3,32 +3,42 @@
  *
  *	Copyright 2000, Be Incorporated.   All Rights Reserved.
  *	This file may be used under the terms of the Be Sample Code License.
+ *
+ *  Copyright 2004-2023, HaikuArchives Team
+ *  Distributed under the terms of the MIT License.
+ *
+ *  Authors:
+ * 		Nathan Schrenk
+ * 		Thomas Thiriez (code from his EasyMove app)
+ *		Oscar Lesta
  */
 
 #include "KeyCursor.h"
+
 #include <InterfaceDefs.h>
 #include <Message.h>
-#include <View.h>	// for B_PRIMARY_MOUSE_BUTTON, etc.
+#include <View.h> // for B_PRIMARY_MOUSE_BUTTON, etc.
+
 #include <stdio.h>
 #include <syslog.h>
 
 // #define DEBUG_KEYCURSOR
 
-//------------------------------------------------------------------------------
 
-extern "C" {
-
-BInputServerDevice* instantiate_input_device()
+extern "C"
 {
-	return new KeyCursorDevice();
-}
+
+	BInputServerDevice* instantiate_input_device()
+	{
+		return new KeyCursorDevice();
+	}
 
 } // extern "C"
 
-//-------------------------------------------------------------------------------
 
 KeyCursorDevice::KeyCursorDevice()
-	: BInputServerDevice()
+	:
+	BInputServerDevice()
 {
 	fLeftTime = 0;
 	fRightTime = 0;
@@ -53,6 +63,7 @@ KeyCursorDevice::KeyCursorDevice()
 	}
 }
 
+
 KeyCursorDevice::~KeyCursorDevice()
 {
 	if (fThreadID != -1) {
@@ -61,40 +72,42 @@ KeyCursorDevice::~KeyCursorDevice()
 	}
 }
 
-status_t KeyCursorDevice::InitCheck()
+
+status_t
+KeyCursorDevice::InitCheck()
 {
 	input_device_ref* devices[2];
-	input_device_ref devRef = {	(char*) KEY_CURSOR_DEVICE_NAME,
-								B_POINTING_DEVICE,
-								(void*) this };
+	input_device_ref devRef = {(char*) KEY_CURSOR_DEVICE_NAME, B_POINTING_DEVICE, (void*) this};
 	devices[0] = &devRef;
 	devices[1] = NULL;
 	return RegisterDevices(devices);
 }
 
-status_t KeyCursorDevice::SystemShuttingDown()
+
+status_t
+KeyCursorDevice::SystemShuttingDown()
 {
 	return B_OK;
 }
 
-status_t KeyCursorDevice::Start(const char* /*device*/, void* /*cookie*/)
+
+status_t
+KeyCursorDevice::Start(const char* /*device*/, void* /*cookie*/)
 {
-	if (fThreadID < B_OK)
-	{
+	if (fThreadID < B_OK) {
 		fPortID = create_port(50, KEY_CURSOR_DEVICE_PORT_NAME);
-		fThreadID = spawn_thread(KeyCursorDevice::ThreadFunc,
-								KEY_CURSOR_DEVICE_THREAD_NAME,
-								B_URGENT_DISPLAY_PRIORITY,
-								(void*) this);
+		fThreadID = spawn_thread(KeyCursorDevice::ThreadFunc, KEY_CURSOR_DEVICE_THREAD_NAME,
+			B_URGENT_DISPLAY_PRIORITY, (void*) this);
 		resume_thread(fThreadID);
 	}
 	return B_OK;
 }
 
-status_t KeyCursorDevice::Stop(const char* /*device*/, void* /*cookie*/)
+
+status_t
+KeyCursorDevice::Stop(const char* /*device*/, void* /*cookie*/)
 {
-	if (fPortID > 0)
-	{
+	if (fPortID > 0) {
 		sem_id quitSem = create_sem(0, "KeyCursorDevice quit sem");
 		write_port(fPortID, QUIT_COMMAND, (void*) &quitSem, sizeof(quitSem));
 		acquire_sem(quitSem);
@@ -105,6 +118,7 @@ status_t KeyCursorDevice::Stop(const char* /*device*/, void* /*cookie*/)
 	}
 	return B_OK;
 }
+
 
 status_t
 KeyCursorDevice::Control(const char* device, void* cookie, uint32 code, BMessage* message)
@@ -117,29 +131,31 @@ KeyCursorDevice::Control(const char* device, void* cookie, uint32 code, BMessage
 			fClickSpeed = 100000; // 0.1 secs should be the minumum value according to the BeBook.
 		}
 #ifdef DEBUG_KEYCURSOR
-		else syslog(LOG_INFO, "KeyCursorDevice: fClickSpeed = %d", fClickSpeed);
+		else
+			syslog(LOG_INFO, "KeyCursorDevice: fClickSpeed = %d", fClickSpeed);
 #endif
 	}
 	return B_OK;
 }
 
-int32 KeyCursorDevice::ThreadFunc(void* castToKeyCursorDevice)
+
+int32
+KeyCursorDevice::ThreadFunc(void* castToKeyCursorDevice)
 {
 	KeyCursorDevice* device = (KeyCursorDevice*) castToKeyCursorDevice;
 	device->MessageLoop();
 	return 0;
 }
 
-void KeyCursorDevice::MessageLoop()
+
+void
+KeyCursorDevice::MessageLoop()
 {
-	for (;;)
-	{
+	for (;;) {
 		int32 what = 0;
 		int32 data = 0;
-		while (read_port_etc(fPortID, &what, &data, sizeof(data), B_TIMEOUT, 0) >= 0)
-		{
-			if (what == QUIT_COMMAND)
-			{
+		while (read_port_etc(fPortID, &what, &data, sizeof(data), B_TIMEOUT, 0) >= 0) {
+			if (what == QUIT_COMMAND) {
 				release_sem((sem_id) data);
 				return;
 			}
@@ -151,56 +167,56 @@ void KeyCursorDevice::MessageLoop()
 	}
 }
 
-void KeyCursorDevice::ProcessMessage(int32 what, int32 data)
+
+void
+KeyCursorDevice::ProcessMessage(int32 what, int32 data)
 {
 	bigtime_t now = system_time();
 
-	if (what == PREFS_CHANGED)
-	{
+	if (what == PREFS_CHANGED) {
 		fPrefs.Update();
 		fAcceleration = fPrefs.GetAcceleration() / 1000000.0f;
 		return;
 	}
 
-	switch (what)
-	{
+	switch (what) {
 		case LEFT_KEY_DOWN:
 			fLeftTime = now;
-		break;
+			break;
 		case RIGHT_KEY_DOWN:
 			fRightTime = now;
-		break;
+			break;
 		case UP_KEY_DOWN:
 			fUpTime = now;
-		break;
+			break;
 		case DOWN_KEY_DOWN:
 			fDownTime = now;
-		break;
+			break;
 		case PAGE_UP_KEY_DOWN:
 			fWheelUpTime = now;
-		break;
+			break;
 		case PAGE_DOWN_KEY_DOWN:
 			fWheelDownTime = now;
-		break;
+			break;
 
 		case LEFT_KEY_UP:
 			fLeftTime = 0;
-		break;
+			break;
 		case RIGHT_KEY_UP:
 			fRightTime = 0;
-		break;
+			break;
 		case UP_KEY_UP:
 			fUpTime = 0;
-		break;
+			break;
 		case DOWN_KEY_UP:
 			fDownTime = 0;
-		break;
+			break;
 		case PAGE_UP_KEY_UP:
 			fWheelUpTime = 0;
-		break;
+			break;
 		case PAGE_DOWN_KEY_UP:
 			fWheelDownTime = 0;
-		break;
+			break;
 
 		case BUTTON_DOWN:
 		{
@@ -208,27 +224,29 @@ void KeyCursorDevice::ProcessMessage(int32 what, int32 data)
 #ifdef DEBUG_KEYCURSOR
 			syslog(LOG_INFO, "clicked = %d", clicked);
 #endif
-			if ((clicked != fClickedButton) || ((now - fLastClick) > fClickSpeed))
-			{
+			if ((clicked != fClickedButton) || ((now - fLastClick) > fClickSpeed)) {
 				// a different button was clicked, or not fast enough as to count as a double-click.
 				fClickCount = 1;
 				fClickedButton = clicked;
-			}
-			else {
+			} else
 				fClickCount++;
-			}
 
 			fLastClick = now;
 
 			int32 buttonMask;
-			switch (fClickedButton)
-			{
-				case 1:	buttonMask = B_PRIMARY_MOUSE_BUTTON; break;
-				case 2:	buttonMask = B_SECONDARY_MOUSE_BUTTON; break;
+			switch (fClickedButton) {
+				case 1:
+					buttonMask = B_PRIMARY_MOUSE_BUTTON;
+					break;
+				case 2:
+					buttonMask = B_SECONDARY_MOUSE_BUTTON;
+					break;
 				default:
-					syslog(LOG_ERR, "KeyCursorDevice::ProcessMessage(): Invalid fClickedButton = %d", fClickedButton);
+					syslog(LOG_ERR,
+						"KeyCursorDevice::ProcessMessage(): Invalid fClickedButton = %d",
+						fClickedButton);
 					buttonMask = 0;
-				break;
+					break;
 			}
 
 			BMessage* event = new BMessage(B_MOUSE_DOWN);
@@ -241,8 +259,7 @@ void KeyCursorDevice::ProcessMessage(int32 what, int32 data)
 			syslog(LOG_INFO, "KeyCursorDevice: fClickCount = %d", fClickCount);
 #endif
 			EnqueueMessage(event);
-		}
-		break;
+		} break;
 
 		case BUTTON_UP:
 		{
@@ -251,67 +268,65 @@ void KeyCursorDevice::ProcessMessage(int32 what, int32 data)
 			event->AddInt32("x", 0);
 			event->AddInt32("y", 0);
 			EnqueueMessage(event);
-		}
-		break;
+		} break;
 	}
 }
 
-void KeyCursorDevice::GenerateMotionEvent()
+
+void
+KeyCursorDevice::GenerateMotionEvent()
 {
-	if (fLeftTime || fRightTime || fUpTime || fDownTime || fWheelUpTime || fWheelDownTime)
-	{
+	if (fLeftTime || fRightTime || fUpTime || fDownTime || fWheelUpTime || fWheelDownTime) {
 		bigtime_t now = system_time();
 		int32 x(0), y(0), w(0);
 		int32 delta;
 
-		if (fLeftTime)
-		{
+		if (fLeftTime) {
 			delta = (int32) (fAcceleration * (now - fLeftTime));
 			x -= (delta > 0) ? delta : 1;
 		}
 
-		if (fRightTime)
-		{
+		if (fRightTime) {
 			delta = (int32) (fAcceleration * (now - fRightTime));
 			x += (delta > 0) ? delta : 1;
 		}
 
-		if (fUpTime)
-		{
+		if (fUpTime) {
 			delta = (int32) (fAcceleration * (now - fUpTime));
 			y += (delta > 0) ? delta : 1;
 		}
 
-		if (fDownTime)
-		{
+		if (fDownTime) {
 			delta = (int32) (fAcceleration * (now - fDownTime));
 			y -= (delta > 0) ? delta : 1;
 		}
 
-		if (fWheelUpTime)
-		{
+		if (fWheelUpTime) {
 			delta = (int32) (now - fWheelUpTime);
 			w -= (delta > 0) ? 1 : 0;
 		}
 
-		if (fWheelDownTime)
-		{
+		if (fWheelDownTime) {
 			delta = (int32) (now - fWheelDownTime);
 			w -= (delta > 0) ? -1 : 0;
 		}
 
 		int32 buttonMask;
-		switch (fClickedButton)
-		{
-			case 1 : buttonMask = B_PRIMARY_MOUSE_BUTTON;   break;
-			case 2 : buttonMask = B_SECONDARY_MOUSE_BUTTON; break;
-			default: buttonMask = 0;                        break;
+		switch (fClickedButton) {
+			case 1:
+				buttonMask = B_PRIMARY_MOUSE_BUTTON;
+				break;
+			case 2:
+				buttonMask = B_SECONDARY_MOUSE_BUTTON;
+				break;
+			default:
+				buttonMask = 0;
+				break;
 		}
 
 #ifdef DEBUG_KEYCURSOR
-		if (fClickedButton) {
+		if (fClickedButton)
 			syslog(LOG_INFO, "KeyCursorDevice: fClickedButton = %d", fClickedButton);
-		}
 #endif
 
 		BMessage* event = new BMessage(B_MOUSE_MOVED);
@@ -321,8 +336,7 @@ void KeyCursorDevice::GenerateMotionEvent()
 		event->AddInt32("y", y);
 		EnqueueMessage(event);
 
-		if (w)
-		{
+		if (w) {
 			event = new BMessage(B_MOUSE_WHEEL_CHANGED);
 			event->AddInt64("when", now);
 			event->AddFloat("be:wheel_delta_y", w);

@@ -1,6 +1,18 @@
+/*
+ * Copyright 2004-2023, HaikuArchives Team
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ *		Oscar Lesta
+ *		Humdinger
+ */
+#ifndef SETTINGSWIN_H
+#define SETTINGSWIN_H
+
 #include <Window.h>
 
 #include "Preferences.h"
+
 
 class BView;
 class BSlider;
@@ -11,18 +23,21 @@ class ModifierBox;
 class SettingsWin : public BWindow
 {
 public:
-				SettingsWin();
-				~SettingsWin();
-	virtual void MessageReceived(BMessage* message);
-	virtual bool QuitRequested();
+					SettingsWin();
+					~SettingsWin();
+
+	virtual void 	MessageReceived(BMessage* message);
+	virtual bool 	QuitRequested();
 
 private:
-	void SendUpdateMessage();
+			void 	SendUpdateMessage();
 
-	BView* bgView;
-	ModifierBox* fModBox;
-	BCheckBox* fEnabled;
-	BSlider* fAccelSlider;
+			BView* 	fBGView;
+	ModifierBox* 	fModBox;
+	BCheckBox* 		fEnabled;
+	BSlider* 		fAccelSlider;
 
-	Preferences fPrefs;
+	Preferences 	fPrefs;
 };
+
+#endif // SETTINGSWIN_H

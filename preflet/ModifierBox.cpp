@@ -1,25 +1,35 @@
+/*
+ * Copyright 2004-2023, HaikuArchives Team
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Thomas Thiriez (code from his EasyMove app)
+ *		Oscar Lesta
+ *		Humdinger
+ */
+
+
 #include "ModifierBox.h"
 #include "ModifierView.h"
 
-////////////////////////////////////////////////////////////////////////////////
 
-const ModifierBox::MaskListType ModifierBox::ModifierList[]=
+const ModifierBox::MaskListType ModifierBox::ModifierList[] =
 {
-	{B_SHIFT_KEY,	"Shift"},
-	{B_CONTROL_KEY,	"Control"},
-	{B_COMMAND_KEY,	"Command"},
-	{B_OPTION_KEY,	"Option"},
-	{B_MENU_KEY,	"Menu"}
+	{ B_SHIFT_KEY,   "Shift" },
+	{ B_CONTROL_KEY, "Control" },
+	{ B_COMMAND_KEY, "Command" },
+	{ B_OPTION_KEY,  "Option" },
+	{ B_MENU_KEY,    "Menu" }
 };
 
-////////////////////////////////////////////////////////////////////////////////
 
-ModifierBox::ModifierBox(BRect frame, const char* label, uint32 modifier,
-						uint32 /*button*/)
-	: BBox(frame),
+ModifierBox::ModifierBox(BRect frame, const char* label, uint32 modifier, uint32 /*button*/)
+	:
+	BBox(frame),
 	fDefaultModifier(0)
 {
-	if (label) SetLabel(label);
+	if (label)
+		SetLabel(label);
 
 	float right = 0;
 	float bottom;
@@ -31,14 +41,20 @@ ModifierBox::ModifierBox(BRect frame, const char* label, uint32 modifier,
 	float width = f.StringWidth("Command");
 	width += 20;
 
-	fModifierViewList[0] = new ModifierView(BRect(10, 15, 10 + width, 15), ModifierList[0].mask, ModifierList[0].label, ModifierList[0].mask & modifier, new BMessage(MODIFIER_CHANGED));
-	fModifierViewList[1] = new ModifierView(BRect(10, 35, 10 + width, 45), ModifierList[1].mask, ModifierList[1].label, ModifierList[1].mask & modifier, new BMessage(MODIFIER_CHANGED));
-	fModifierViewList[2] = new ModifierView(BRect(10, 55, 10 + width, 65), ModifierList[2].mask, ModifierList[2].label, ModifierList[2].mask & modifier, new BMessage(MODIFIER_CHANGED));
-	fModifierViewList[3] = new ModifierView(BRect(15 + width, 15, 75 + width, 15), ModifierList[3].mask, ModifierList[3].label, ModifierList[3].mask & modifier, new BMessage(MODIFIER_CHANGED));
-	fModifierViewList[4] = new ModifierView(BRect(15 + width, 35, 75 + width, 45), ModifierList[4].mask, ModifierList[4].label, ModifierList[4].mask & modifier, new BMessage(MODIFIER_CHANGED));
+	fModifierViewList[0] = new ModifierView(BRect(10, 15, 10 + width, 15), ModifierList[0].mask,
+		ModifierList[0].label, ModifierList[0].mask & modifier, new BMessage(MODIFIER_CHANGED));
+	fModifierViewList[1] = new ModifierView(BRect(10, 35, 10 + width, 45), ModifierList[1].mask,
+		ModifierList[1].label, ModifierList[1].mask & modifier, new BMessage(MODIFIER_CHANGED));
+	fModifierViewList[2] = new ModifierView(BRect(10, 55, 10 + width, 65), ModifierList[2].mask,
+		ModifierList[2].label, ModifierList[2].mask & modifier, new BMessage(MODIFIER_CHANGED));
+	fModifierViewList[3]
+		= new ModifierView(BRect(15 + width, 15, 75 + width, 15), ModifierList[3].mask,
+			ModifierList[3].label, ModifierList[3].mask & modifier, new BMessage(MODIFIER_CHANGED));
+	fModifierViewList[4]
+		= new ModifierView(BRect(15 + width, 35, 75 + width, 45), ModifierList[4].mask,
+			ModifierList[4].label, ModifierList[4].mask & modifier, new BMessage(MODIFIER_CHANGED));
 
-	for (int32 i = 0; i < 5; i++)
-	{
+	for (int32 i = 0; i < 5; i++) {
 		fModifierViewList[i]->ResizeToPreferred();
 		AddChild(fModifierViewList[i]);
 
@@ -50,43 +66,46 @@ ModifierBox::ModifierBox(BRect frame, const char* label, uint32 modifier,
 	ResizeTo(right + 10, bottom + 30);
 }
 
+
 ModifierBox::~ModifierBox()
 {
 	delete fModifierViewList;
 }
 
-void ModifierBox::MessageReceived(BMessage* message)
+
+void
+ModifierBox::MessageReceived(BMessage* message)
 {
 	uint32 mask = 0;
 
-	switch(message->what)
-	{
+	switch (message->what) {
 		case MODIFIER_CHANGED:
 			for (int32 i = 0; i < 5; i++)
 				mask |= fModifierViewList[i]->GetMask();
-			if (!mask)
-			{
+			if (!mask) {
 				mask = fDefaultModifier;
 				for (int32 i = 0; i < 5; i++)
 					fModifierViewList[i]->SetValue(ModifierList[i].mask & mask);
 			}
 			InvokeNotify(Message());
-		break;
+			break;
 
 		default:
 			BBox::MessageReceived(message);
 	}
 }
 
-void ModifierBox::AttachedToWindow()
+
+void
+ModifierBox::AttachedToWindow()
 {
 	for (int32 i = 0; i < 5; i++)
 		fModifierViewList[i]->SetTarget(this);
 }
 
-////////////////////////////////////////////////////////////////////////////////
 
-uint32 ModifierBox::GetModifierMask()
+uint32
+ModifierBox::GetModifierMask()
 {
 	uint32 mask = 0;
 
@@ -96,23 +115,27 @@ uint32 ModifierBox::GetModifierMask()
 	return mask;
 }
 
-void ModifierBox::SetModifierMask(uint32 mask)
+
+void
+ModifierBox::SetModifierMask(uint32 mask)
 {
 	for (int32 i = 0; i < 5; i++)
 		fModifierViewList[i]->SetValue(ModifierList[i].mask & mask);
 }
 
-void ModifierBox::SetDefaultModifierMask(uint32 mask)
+
+void
+ModifierBox::SetDefaultModifierMask(uint32 mask)
 {
 	fDefaultModifier = mask;
 }
 
-void ModifierBox::SetEnabled(bool enabled)
+
+void
+ModifierBox::SetEnabled(bool enabled)
 {
 	for (int i = 0; i < 5; i++)
 		fModifierViewList[i]->SetEnabled(enabled);
 
 	fControlsEnabled = enabled;
 }
-
-////////////////////////////////////////////////////////////////////////////////

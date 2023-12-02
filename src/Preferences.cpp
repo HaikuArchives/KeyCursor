@@ -1,16 +1,27 @@
-#include <storage/Path.h>
-#include <storage/File.h>
-#include <storage/Directory.h>
-#include <storage/FindDirectory.h>
+/*
+ * Copyright 2004-2023, HaikuArchives Team
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Thomas Thiriez (code from his EasyMove app)
+ *		Oscar Lesta
+ *		Humdinger
+ */
+
+
+#include <Directory.h>
+#include <File.h>
+#include <FindDirectory.h>
+#include <Path.h>
 
 #include "Preferences.h"
 
-////////////////////////////////////////////////////////////////////////////////
 
 Preferences::Preferences()
 {
 	Load();
 }
+
 
 Preferences::~Preferences()
 {
@@ -19,12 +30,16 @@ Preferences::~Preferences()
 #endif
 }
 
-void Preferences::Update()
+
+void
+Preferences::Update()
 {
 	Load();
 }
 
-void Preferences::SetToDefault()
+
+void
+Preferences::SetToDefault()
 {
 	SetToggleModMask(GetDefaultToggleModMask());
 	SetClickKeyMask(GetDefaultClickKeyMask());
@@ -37,7 +52,9 @@ void Preferences::SetToDefault()
 #endif
 }
 
-BFile* Preferences::OpenFile(uint32 openMode)
+
+BFile*
+Preferences::OpenFile(uint32 openMode)
 {
 	BPath path;
 	find_directory(B_USER_SETTINGS_DIRECTORY, &path);
@@ -46,8 +63,7 @@ BFile* Preferences::OpenFile(uint32 openMode)
 	status_t err;
 	err = file->InitCheck();
 
-	if (err != B_OK)
-	{
+	if (err != B_OK) {
 		delete file;
 		return 0;
 	}
@@ -55,13 +71,16 @@ BFile* Preferences::OpenFile(uint32 openMode)
 	return file;
 }
 
-void Preferences::Load()
+
+void
+Preferences::Load()
 {
 	SetToDefault();
 
 	BFile* file = OpenFile(B_READ_ONLY);
 
-	if (!file) return;
+	if (!file)
+		return;
 
 	file->Read(&fToggleModMask, sizeof(uint32));
 	file->Read(&fClickKeyMask, sizeof(uint32));
@@ -69,8 +88,7 @@ void Preferences::Load()
 	file->Read(&fAcceleration, sizeof(float));
 
 #ifdef I_AM_THE_PREFLET
-	if (file->Read(&fCorner, sizeof(BPoint)) != sizeof(BPoint))
-	{
+	if (file->Read(&fCorner, sizeof(BPoint)) != sizeof(BPoint)) {
 		fCorner.x = 50;
 		fCorner.y = 50;
 	};
@@ -81,11 +99,14 @@ void Preferences::Load()
 
 #ifdef I_AM_THE_PREFLET // if compiling the preflet...
 
-void Preferences::Save()
+
+void
+Preferences::Save()
 {
 	BFile* file = OpenFile(B_WRITE_ONLY | B_CREATE_FILE);
 
-	if (!file) return;
+	if (!file)
+		return;
 
 	file->Write(&fToggleModMask, sizeof(uint32));
 	file->Write(&fClickKeyMask, sizeof(uint32));
@@ -97,7 +118,8 @@ void Preferences::Save()
 }
 
 
-void Preferences::SetWindowCorner(BPoint corner)
+void
+Preferences::SetWindowCorner(BPoint corner)
 {
 	fCorner = corner;
 }

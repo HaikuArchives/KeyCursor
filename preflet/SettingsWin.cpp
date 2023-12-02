@@ -1,9 +1,17 @@
-#include <stdlib.h>
+/*
+ * Copyright 2004-2023, HaikuArchives Team
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ *		Oscar Lesta
+ *		Humdinger
+ */
+
 
 #include <Application.h>
 #include <Box.h>
-#include <Slider.h>
 #include <Screen.h>
+#include <Slider.h>
 #include <String.h>
 #include <TextView.h>
 #include <View.h>
@@ -12,19 +20,23 @@
 #include "ModifierView.h"
 #include "SettingsWin.h"
 
-SettingsWin::SettingsWin()
-	: BWindow(BRect(100, 100, 400, 300), "KeyCursor Settings", B_TITLED_WINDOW,
-				B_ASYNCHRONOUS_CONTROLS | B_NOT_RESIZABLE | B_NOT_ZOOMABLE)
-{
-	bgView = new BView(BRect(Bounds()), "", B_FOLLOW_ALL_SIDES, B_WILL_DRAW);
-	bgView->SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
-	AddChild(bgView);
+#include <stdlib.h>
 
-	fEnabled = new BCheckBox(BRect(10, 5, 10, 10), "fEnabled", "Enable KeyCursor",
-							new BMessage(ENABLED_CHANGED));
+
+SettingsWin::SettingsWin()
+	:
+	BWindow(BRect(100, 100, 400, 300), "KeyCursor Settings", B_TITLED_WINDOW,
+		B_ASYNCHRONOUS_CONTROLS | B_NOT_RESIZABLE | B_NOT_ZOOMABLE)
+{
+	fBGView = new BView(BRect(Bounds()), "", B_FOLLOW_ALL_SIDES, B_WILL_DRAW);
+	fBGView->SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
+	AddChild(fBGView);
+
+	fEnabled = new BCheckBox(
+		BRect(10, 5, 10, 10), "fEnabled", "Enable KeyCursor", new BMessage(ENABLED_CHANGED));
 	fEnabled->SetValue(fPrefs.GetEnabled());
 	fEnabled->ResizeToPreferred();
-	bgView->AddChild(fEnabled);
+	fBGView->AddChild(fEnabled);
 
 	fEnabled->MakeFocus(true);
 
@@ -32,26 +44,24 @@ SettingsWin::SettingsWin()
 	float bottom;
 	BRect frame;
 
-	frame = BRect(10, fEnabled->Frame().bottom + 10, 10,
-					fEnabled->Frame().bottom + 10);
+	frame = BRect(10, fEnabled->Frame().bottom + 10, 10, fEnabled->Frame().bottom + 10);
 
-	fModBox = new ModifierBox(frame, "Toggle Keys", fPrefs.GetToggleModMask(),
-							 fPrefs.GetClickKeyMask());
+	fModBox = new ModifierBox(
+		frame, "Toggle Keys", fPrefs.GetToggleModMask(), fPrefs.GetClickKeyMask());
 	fModBox->SetDefaultModifierMask(fPrefs.GetDefaultClickKeyMask());
 
 	fModBox->SetMessage(new BMessage(TOGGLE_CHANGED));
 	fModBox->SetTarget(this);
-	bgView->AddChild(fModBox);
+	fBGView->AddChild(fModBox);
 
 	fModBox->SetEnabled(fPrefs.GetEnabled());
 
 	bottom = fModBox->Frame().bottom;
 	right = fModBox->Frame().right;
 
-	fAccelSlider = new BSlider( BRect(10, fModBox->Frame().bottom + 10, 10,
-								fModBox->Frame().bottom + 10), "accel_slider",
-								"Acceleration Factor",
-								new BMessage(ACCEL_CHANGED), 0, 40);
+	fAccelSlider
+		= new BSlider(BRect(10, fModBox->Frame().bottom + 10, 10, fModBox->Frame().bottom + 10),
+			"accel_slider", "Acceleration Factor", new BMessage(ACCEL_CHANGED), 0, 40);
 
 	fAccelSlider->SetKeyIncrementValue(10);
 	fAccelSlider->SetHashMarks(B_HASH_MARKS_BOTTOM);
@@ -60,10 +70,9 @@ SettingsWin::SettingsWin()
 	fAccelSlider->SetLimitLabels("Mix", "Max");
 
 	fAccelSlider->ResizeToPreferred();
-	fAccelSlider->ResizeTo( fModBox->Frame().Width() - 2,
-							fAccelSlider->Frame().Height());
-	
-	bgView->AddChild(fAccelSlider);
+	fAccelSlider->ResizeTo(fModBox->Frame().Width() - 2, fAccelSlider->Frame().Height());
+
+	fBGView->AddChild(fAccelSlider);
 
 	fAccelSlider->SetEnabled(fPrefs.GetEnabled());
 
@@ -76,35 +85,39 @@ SettingsWin::SettingsWin()
 	{
 		BScreen screen;
 
-		if (!(	screen.Frame().right >= Frame().right &&
-				screen.Frame().bottom >= Frame().bottom))
-			MoveTo( (screen.Frame().right  - Bounds().right)  * 0.5,
-					(screen.Frame().bottom - Bounds().bottom) * 0.5);
+		if (!(screen.Frame().right >= Frame().right && screen.Frame().bottom >= Frame().bottom)) {
+			MoveTo((screen.Frame().right - Bounds().right) * 0.5,
+				(screen.Frame().bottom - Bounds().bottom) * 0.5);
+		}
 	}
 }
+
 
 SettingsWin::~SettingsWin()
 {
 }
 
-void SettingsWin::MessageReceived(BMessage* message)
+
+void
+SettingsWin::MessageReceived(BMessage* message)
 {
-	switch(message->what)
-	{
+	switch (message->what) {
 		case TOGGLE_CHANGED:
+		{
 			fPrefs.SetToggleModMask(fModBox->GetModifierMask());
 
 			fPrefs.Save();
 			SendUpdateMessage();
-		break;
+		} break;
 
 		case ENABLED_CHANGED:
+		{
 			fPrefs.SetEnabled(fEnabled->Value());
 			fPrefs.Save();
 			fModBox->SetEnabled(!fModBox->IsEnabled());
 			fAccelSlider->SetEnabled(!fAccelSlider->IsEnabled());
 			SendUpdateMessage();
-		break;
+		} break;
 
 		case ACCEL_CHANGED:
 		{
@@ -115,28 +128,32 @@ void SettingsWin::MessageReceived(BMessage* message)
 			fPrefs.SetAcceleration(rate);
 			fPrefs.Save();
 			SendUpdateMessage();
-		}
-		break;
+		} break;
 
 		default:
 			BWindow::MessageReceived(message);
 	}
 }
 
-bool SettingsWin::QuitRequested()
+
+bool
+SettingsWin::QuitRequested()
 {
-	fPrefs.SetWindowCorner(BPoint(Frame().left,Frame().top));
+	fPrefs.SetWindowCorner(BPoint(Frame().left, Frame().top));
 
 	be_app_messenger.SendMessage(B_QUIT_REQUESTED);
 
 	return true;
 }
 
-void SettingsWin::SendUpdateMessage()
+
+void
+SettingsWin::SendUpdateMessage()
 {
 	port_id port = find_port(KEY_CURSOR_PREFS_PORT_NAME);
 
-	if (port < 0) return;
+	if (port < 0)
+		return;
 
 	write_port(port, PREFS_CHANGED, NULL, 0);
 }
