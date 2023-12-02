@@ -1,0 +1,12 @@
+1	English	application/x-vnd.OscarL-KeyCursorSettings	77331839
+Command	ModifierBox		Command
+Min	SettingsWindow		Min
+Control	ModifierBox		Control
+Menu	ModifierBox		Menu
+KeyCursor settings	SettingsWindow		KeyCursor settings
+Shift	ModifierBox		Shift
+Acceleration	SettingsWindow		Acceleration
+Option	ModifierBox		Option
+Max	SettingsWindow		Max
+Toggle keys	SettingsWindow		Toggle keys
+Enable KeyCursor	SettingsWindow		Enable KeyCursor

@@ -11,10 +11,9 @@
 #include "ModifierView.h"
 
 
-ModifierView::ModifierView(
-	BRect frame, uint32 modifierMask, const char* label, bool initialValue, BMessage* msg)
+ModifierView::ModifierView(uint32 modifierMask, const char* label, bool initialValue, BMessage* msg)
 	:
-	BCheckBox(frame, "", label, msg),
+	BCheckBox(NULL, label, msg),
 	fModifierMask(modifierMask)
 {
 	SetValue(initialValue);
