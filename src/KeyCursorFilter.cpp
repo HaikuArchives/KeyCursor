@@ -9,6 +9,7 @@
  * 		Nathan Schrenk
  *		Thomas Thiriez (code from his EasyMove app)
  *		Oscar Lesta
+ *		Humdinger
  */
 
 #include "KeyCursor.h"
@@ -123,6 +124,8 @@ KeyCursorFilter::Filter(BMessage* message, BList* /*outList*/)
 				if (toggleModPressedLast) {
 					fToggleOn = !fToggleOn;
 					beep();
+
+					_SendStatus();
 				}
 				toggleModPressedLast = false;
 			}
@@ -322,15 +325,25 @@ KeyCursorFilter::PrefsThreadFunc(void* cookie)
 		if (err < 0)
 			return err;
 
+		KeyCursorFilter* filter = (KeyCursorFilter*) cookie;
 		if (msg_code == PREFS_CHANGED) {
-			KeyCursorFilter* filter = (KeyCursorFilter*) cookie;
-
 			filter->fPrefs.Update();
 			filter->fNecessaryMods = filter->fPrefs.GetToggleModMask();
 
 			filter->SendMessageToDevice(PREFS_CHANGED);
-		}
+		} else if (msg_code == STATE)
+			filter->_SendStatus();
 	}
 
 	return B_OK;
+}
+
+
+void
+KeyCursorFilter::_SendStatus()
+{
+	BMessenger messenger(APP_SIGNATURE);
+	BMessage message(STATE);
+	message.AddBool("status", fToggleOn);
+	messenger.SendMessage(&message);
 }

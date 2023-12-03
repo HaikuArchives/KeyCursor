@@ -18,6 +18,8 @@
 #define	ACCEL_CHANGED	'kcAC'
 #define	PREFS_CHANGED	'kcPC'
 
+#define STATE			'stat'
+
 #define KEY_CURSOR_PREFS_PORT_NAME		"KeyCursor PrefsPort"
 
 #define kSettingsFileName "KeyCursor"

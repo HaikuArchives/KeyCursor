@@ -16,6 +16,7 @@
 
 class BView;
 class BSlider;
+class BStringView;
 class BCheckBox;
 class ModifierView;
 class ModifierBox;
@@ -30,9 +31,9 @@ public:
 	virtual bool 	QuitRequested();
 
 private:
-			void 	SendUpdateMessage();
+			void 	_SendMessageToFilter(int32 code);
 
-			BView* 	fBGView;
+	BStringView*	fStatusView;
 	ModifierBox* 	fModBox;
 	BCheckBox* 		fEnabled;
 	BSlider* 		fAccelSlider;

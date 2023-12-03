@@ -7,5 +7,5 @@ cp src/KeyCursor ~/config/non-packaged/add-ons/input_server/devices/KeyCursorDev
 ln -s ~/config/non-packaged/add-ons/input_server/devices/KeyCursorDevice ~/config/non-packaged/add-ons/input_server/filters/KeyCursorFilter
 
 # /system/servers/input_server -q
-kill -9 `pidof input_server`
-sleep 1
+# kill -9 `pidof input_server`
+# sleep 1
