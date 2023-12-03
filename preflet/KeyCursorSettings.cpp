@@ -11,6 +11,7 @@
 #include <Application.h>
 
 #include "SettingsWin.h"
+#include "KeyCursor.h"
 
 
 class SettingsWin;
@@ -22,6 +23,7 @@ public:
 					~SettingsApp();
 
 	virtual void	ReadyToRun();
+	virtual void 	MessageReceived(BMessage* message);
 
 private:
 	SettingsWin* 	fWindow;
@@ -30,7 +32,7 @@ private:
 
 SettingsApp::SettingsApp()
 	:
-	BApplication("application/x-vnd.OscarL-KeyCursorSettings")
+	BApplication(APP_SIGNATURE)
 {
 }
 
@@ -47,6 +49,19 @@ SettingsApp::ReadyToRun()
 	fWindow->Show();
 }
 
+
+void
+SettingsApp::MessageReceived(BMessage* message)
+{
+	switch (message->what) {
+		case STATE:
+			fWindow->PostMessage(message);
+			break;
+
+		default:
+			BApplication::MessageReceived(message);
+	}
+}
 
 int
 main()

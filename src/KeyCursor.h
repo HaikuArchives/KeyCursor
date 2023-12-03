@@ -35,6 +35,8 @@
 extern "C" _EXPORT BInputServerDevice* instantiate_input_device();
 extern "C" _EXPORT BInputServerFilter* instantiate_input_filter();
 
+#define APP_SIGNATURE "application/x-vnd.OscarL-KeyCursorSettings"
+
 #define KEY_CURSOR_DEVICE_NAME			"Keyboard Cursor"
 #define KEY_CURSOR_DEVICE_THREAD_NAME	"KeyCursorDevice"
 #define KEY_CURSOR_DEVICE_PORT_NAME		"KeyCursorDevice port"
@@ -60,6 +62,7 @@ extern "C" _EXPORT BInputServerFilter* instantiate_input_filter();
 #define BUTTON_UP			'bUTU'
 
 #define QUIT_COMMAND		'quIT'
+#define STATE				'stat'
 
 class KeyCursorFilter : public BInputServerFilter
 {
@@ -72,6 +75,7 @@ public:
 
 private:
 			void			SendMessageToDevice(int32 what, int32 data = 0);
+			void			_SendStatus();
 
 			// This thread will wait for preference's changes.
 			static int32	PrefsThreadFunc(void* cookie);
