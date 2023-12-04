@@ -102,7 +102,7 @@ SettingsWin::SettingsWin()
 	CenterOnScreen();
 
 	// Get current toggle status
-	 _SendMessageToFilter(STATE);
+	_SendMessageToFilter(STATE);
 }
 
 

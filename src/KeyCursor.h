@@ -1,4 +1,4 @@
- /*
+/*
  * KeyCursor.h
  *
  *	KeyCursor is an input_server filter add-on and an input_server
