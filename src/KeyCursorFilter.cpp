@@ -13,14 +13,17 @@
  */
 
 #include "KeyCursor.h"
+#include "ReplicantView.h"
 
 #include <Beep.h>
+#include <Deskbar.h>
 #include <InterfaceDefs.h>
 #include <List.h>
 #include <Message.h>
 #include <OS.h>
 
 #include <stdio.h>
+#include <syslog.h>
 
 #define kPrefsThreadPrio 1 // B_LOW_PRIORITY
 
@@ -55,11 +58,45 @@ KeyCursorFilter::KeyCursorFilter()
 
 	if (fPrefsThread >= 0)
 		resume_thread(fPrefsThread);
+
+	BDeskbar deskbar;
+	// wait up to 10 seconds for Deskbar to become available
+	// in case it is not running (yet?)
+	bool isDeskbarRunning = deskbar.IsRunning();
+	int32 tries = 10;
+	while (!isDeskbarRunning && --tries) {
+		if (deskbar.IsRunning()) {
+			isDeskbarRunning = true;
+			break;
+		}
+		snooze(1000000);
+	}
+
+	if (!isDeskbarRunning) {
+		syslog(LOG_INFO, "KeyCursorFilter: Deskbar isn't running.");
+		return;
+	}
+
+	if (deskbar.HasItem(REPLICANT_SIGNATURE))
+		_RemoveFromDeskbar();
+
+	float height = deskbar.MaxItemHeight();
+	BRect rect(0, 0, height - 1, height - 1);
+	ReplicantView* replicant = new ReplicantView(rect);
+	status_t res = deskbar.AddItem(replicant);
+	if (res != B_OK)
+		syslog(LOG_INFO, "KeyCursorFilter: couldn't add replicant.");
+
+
 }
 
 
 KeyCursorFilter::~KeyCursorFilter()
 {
+	BDeskbar deskbar;
+	if (deskbar.HasItem(REPLICANT_SIGNATURE))
+		_RemoveFromDeskbar();
+
 	if (fPrefsThread != -1)
 		kill_thread(fPrefsThread);
 }
@@ -336,6 +373,21 @@ KeyCursorFilter::PrefsThreadFunc(void* cookie)
 	}
 
 	return B_OK;
+}
+
+
+void
+KeyCursorFilter::_RemoveFromDeskbar()
+{
+	BDeskbar deskbar;
+	int32 found_id;
+	if (deskbar.GetItemInfo(REPLICANT_SIGNATURE, &found_id) == B_OK) {
+		status_t err = deskbar.RemoveItem(found_id);
+		if (err != B_OK) {
+			printf("KeyCursor: Error removing replicant id " "%" B_PRId32 ": %s\n",
+				found_id, strerror(err));
+		}
+	}
 }
 
 

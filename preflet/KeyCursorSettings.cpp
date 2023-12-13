@@ -12,6 +12,7 @@
 
 #include "SettingsWin.h"
 #include "KeyCursor.h"
+#include "ReplicantView.h"
 
 
 class SettingsWin;
@@ -62,6 +63,7 @@ SettingsApp::MessageReceived(BMessage* message)
 			BApplication::MessageReceived(message);
 	}
 }
+
 
 int
 main()
