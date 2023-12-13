@@ -15,7 +15,7 @@ NAME = ../KeyCursor
 #	SHARED:	Shared library or add-on
 #	STATIC:	Static library archive
 #	DRIVER: Kernel driver
-TYPE =
+TYPE = APP
 
 # If you plan to use localization, specify the application's MIME signature.
 APP_MIME_SIG = application/x-vnd.OscarL-KeyCursorSettings
@@ -41,11 +41,11 @@ SRCS = \
 
 #	Specify the resource definition files to use. Full or relative paths can be
 #	used.
-RDEFS =
+RDEFS = KeyCursor.rdef
 
 #	Specify the resource files to use. Full or relative paths can be used.
 #	Both RDEFS and RSRCS can be utilized in the same Makefile.
-RSRCS = KeyCursor.rsrc
+RSRCS =
 
 # End Pe/Eddie support.
 # @<-src@

@@ -174,7 +174,7 @@ ReplicantView::_Init()
 		return;
 
 	size_t size;
-	const void* data = resources.LoadResource(B_VECTOR_ICON_TYPE, "tray_icon", &size);
+	const void* data = resources.LoadResource(B_VECTOR_ICON_TYPE, "tray_icon_off", &size);
 	if (data != NULL) {
 		BBitmap* icon = new BBitmap(Bounds(), B_RGBA32);
 		if (icon->InitCheck() == B_OK
