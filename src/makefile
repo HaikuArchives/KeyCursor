@@ -34,7 +34,8 @@ APP_MIME_SIG =
 SRCS = \
 	KeyCursorDevice.cpp	\
 	KeyCursorFilter.cpp \
-	Preferences.cpp
+	Preferences.cpp \
+	ReplicantView.cpp
 
 #	Specify the resource definition files to use. Full or relative paths can be
 #	used.
@@ -60,7 +61,7 @@ RSRCS =
 #	- 	if your library does not follow the standard library naming scheme,
 #		you need to specify the path to the library and it's name.
 #		(e.g. for mylib.a, specify "mylib.a" or "path/mylib.a")
-LIBS =  be
+LIBS = be localestub shared
 
 #	Specify additional paths to directories following the standard libXXX.so
 #	or libXXX.a naming scheme. You can specify full paths or paths relative
@@ -72,7 +73,7 @@ LIBPATHS =
 #	Additional paths to look for system headers. These use the form
 #	"#include <header>". Directories that contain the files in SRCS are
 #	NOT auto-included here.
-SYSTEM_INCLUDE_PATHS =
+SYSTEM_INCLUDE_PATHS = /system/develop/headers/private/interface
 
 #	Additional paths paths to look for local headers. These use the form
 #	#include "header". Directories that contain the files in SRCS are
@@ -110,7 +111,7 @@ SYMBOLS :=
 DEBUGGER :=
 
 #	Specify any additional compiler flags to be used.
-COMPILER_FLAGS = -Wall -Wextra -Wundef -Wshadow -Wmissing-declarations -Wredundant-decls
+COMPILER_FLAGS = -Wall -Wextra -Wundef -Wshadow -Wmissing-declarations -Wredundant-decls -Wno-unused
 
 #	Specify any additional linker flags to be used.
 LINKER_FLAGS =

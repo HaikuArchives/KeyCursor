@@ -36,6 +36,7 @@ SRCS = \
 	ModifierBox.cpp \
 	ModifierView.cpp \
 	../src/Preferences.cpp \
+	../src/ReplicantView.cpp \
 	SettingsWin.cpp
 
 #	Specify the resource definition files to use. Full or relative paths can be
@@ -74,7 +75,7 @@ LIBPATHS =
 #	Additional paths to look for system headers. These use the form
 #	"#include <header>". Directories that contain the files in SRCS are
 #	NOT auto-included here.
-SYSTEM_INCLUDE_PATHS =
+SYSTEM_INCLUDE_PATHS = /system/develop/headers/private/interface
 
 #	Additional paths paths to look for local headers. These use the form
 #	#include "header". Directories that contain the files in SRCS are
@@ -112,7 +113,7 @@ SYMBOLS :=
 DEBUGGER :=
 
 #	Specify any additional compiler flags to be used.
-COMPILER_FLAGS = -Wall -Wextra -Wundef -Wshadow -Wmissing-declarations -Wredundant-decls
+COMPILER_FLAGS = -Wall -Wextra -Wundef -Wshadow -Wmissing-declarations -Wredundant-decls -Wno-unused
 
 #	Specify any additional linker flags to be used.
 LINKER_FLAGS =
