@@ -2,3 +2,4 @@ preflet/objects*
 src/objects*
 preflet/KeyCursor
 src/KeyCursor
+*.genio
