@@ -35,7 +35,9 @@ private:
 			void	_Remove();
 			void	_ShowAbout();
 
-	BBitmap*		fIcon;
+	bool			fState;
+	BBitmap*		fIconOff;
+	BBitmap*		fIconOn;
 	BPopUpMenu*		fPopup;
 };
 

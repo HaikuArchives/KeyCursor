@@ -84,7 +84,7 @@ ReplicantView::AttachedToWindow()
 void
 ReplicantView::Draw(BRect rect)
 {
-	if (!fIcon) {
+	if (!fIconOn || !fIconOff) {
 		// At least display something...
 		rgb_color lowColor = LowColor();
 		SetLowColor(0, 113, 187, 255);
@@ -92,7 +92,7 @@ ReplicantView::Draw(BRect rect)
 		SetLowColor(lowColor);
 	} else {
 		SetDrawingMode(B_OP_ALPHA);
-		DrawBitmap(fIcon);
+		DrawBitmap(fState == true ? fIconOn : fIconOff);
 		SetDrawingMode(B_OP_COPY);
 	}
 }
@@ -108,6 +108,11 @@ ReplicantView::MessageReceived(BMessage* message)
 
 		case OPEN_PREFS:
 			be_roster->Launch(APP_SIGNATURE);
+			break;
+
+		case STATE:
+			message->FindBool("status", &fState);
+			Invalidate();
 			break;
 
 		default:
@@ -159,8 +164,6 @@ ReplicantView::Instantiate(BMessage* dataMsg)
 void
 ReplicantView::_Init()
 {
-	fIcon = NULL;
-
 	image_info info;
 	if (our_image(info) != B_OK)
 		return;
@@ -173,13 +176,25 @@ ReplicantView::_Init()
 	if (resources.InitCheck() < B_OK)
 		return;
 
+	fIconOff = NULL;
+	fIconOn = NULL;
 	size_t size;
 	const void* data = resources.LoadResource(B_VECTOR_ICON_TYPE, "tray_icon_off", &size);
 	if (data != NULL) {
 		BBitmap* icon = new BBitmap(Bounds(), B_RGBA32);
 		if (icon->InitCheck() == B_OK
 			&& BIconUtils::GetVectorIcon((const uint8*)data, size, icon) == B_OK)
-			fIcon = icon;
+			fIconOff = icon;
+		else
+			delete icon;
+	}
+
+	data = resources.LoadResource(B_VECTOR_ICON_TYPE, "tray_icon_on", &size);
+	if (data != NULL) {
+		BBitmap* icon = new BBitmap(Bounds(), B_RGBA32);
+		if (icon->InitCheck() == B_OK
+			&& BIconUtils::GetVectorIcon((const uint8*)data, size, icon) == B_OK)
+			fIconOn = icon;
 		else
 			delete icon;
 	}
