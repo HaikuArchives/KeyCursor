@@ -84,6 +84,7 @@ public:
 
 private:
 			void			SendMessageToDevice(int32 what, int32 data = 0);
+			void			_AddToDeskbar();
 			void			_RemoveFromDeskbar();
 			void			_SendStatus();
 

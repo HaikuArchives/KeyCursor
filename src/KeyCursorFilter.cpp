@@ -77,22 +77,16 @@ KeyCursorFilter::KeyCursorFilter()
 		return;
 	}
 
-	if (deskbar.HasItem(REPLICANT_SIGNATURE))
-		_RemoveFromDeskbar();
+	_AddToDeskbar();
 
-	float height = deskbar.MaxItemHeight();
-	BRect rect(0, 0, height - 1, height - 1);
-	ReplicantView* replicant = new ReplicantView(rect);
-	status_t res = deskbar.AddItem(replicant);
-	if (res != B_OK)
-		syslog(LOG_INFO, "KeyCursorFilter: couldn't add replicant.");
+	_SendStatus();
 }
 
 
 KeyCursorFilter::~KeyCursorFilter()
 {
 	BDeskbar deskbar;
-	if (deskbar.HasItem(REPLICANT_SIGNATURE))
+	if (deskbar.HasItem(REPLICANT_VIEW_NAME))
 		_RemoveFromDeskbar();
 
 	if (fPrefsThread != -1)
@@ -375,11 +369,27 @@ KeyCursorFilter::PrefsThreadFunc(void* cookie)
 
 
 void
+KeyCursorFilter::_AddToDeskbar()
+{
+	BDeskbar deskbar;
+	if (deskbar.HasItem(REPLICANT_VIEW_NAME))
+		_RemoveFromDeskbar();
+
+	float height = deskbar.MaxItemHeight();
+	BRect rect(0, 0, height - 1, height - 1);
+	ReplicantView* replicant = new ReplicantView(rect);
+	status_t res = deskbar.AddItem(replicant);
+	if (res != B_OK)
+		syslog(LOG_INFO, "KeyCursorFilter: couldn't add replicant.");
+}
+
+
+void
 KeyCursorFilter::_RemoveFromDeskbar()
 {
 	BDeskbar deskbar;
 	int32 found_id;
-	if (deskbar.GetItemInfo(REPLICANT_SIGNATURE, &found_id) == B_OK) {
+	if (deskbar.GetItemInfo(REPLICANT_VIEW_NAME, &found_id) == B_OK) {
 		status_t err = deskbar.RemoveItem(found_id);
 		if (err != B_OK) {
 			printf("KeyCursor: Error removing replicant id " "%" B_PRId32 ": %s\n",
@@ -409,6 +419,12 @@ KeyCursorFilter::_SendStatus()
 BMessenger*
 KeyCursorFilter::_ReplicantMessenger()
 {
+	// make sure the replicant lives in the Deskbar
+	// for example, in case Deskbar was restarted
+	BDeskbar deskbar;
+	if (!deskbar.HasItem(REPLICANT_VIEW_NAME))
+		_AddToDeskbar();
+
 	BMessage request(B_GET_PROPERTY);
 	BMessenger to;
 	BMessenger status;
