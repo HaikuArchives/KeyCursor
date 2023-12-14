@@ -53,7 +53,7 @@ our_image(image_info& image)
 
 ReplicantView::ReplicantView(BRect rect)
 	:
-	BView(rect, "KeyCursorView", B_FOLLOW_ALL_SIDES, B_WILL_DRAW | B_FRAME_EVENTS)
+	BView(rect, REPLICANT_VIEW_NAME, B_FOLLOW_ALL_SIDES, B_WILL_DRAW | B_FRAME_EVENTS)
 {
 	_Init();
 }
