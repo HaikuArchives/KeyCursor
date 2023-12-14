@@ -86,8 +86,6 @@ KeyCursorFilter::KeyCursorFilter()
 	status_t res = deskbar.AddItem(replicant);
 	if (res != B_OK)
 		syslog(LOG_INFO, "KeyCursorFilter: couldn't add replicant.");
-
-
 }
 
 
@@ -394,8 +392,138 @@ KeyCursorFilter::_RemoveFromDeskbar()
 void
 KeyCursorFilter::_SendStatus()
 {
-	BMessenger messenger(APP_SIGNATURE);
 	BMessage message(STATE);
 	message.AddBool("status", fToggleOn);
-	messenger.SendMessage(&message);
+
+	// Send current state to preference app
+	BMessenger prefMessenger(APP_SIGNATURE);
+	prefMessenger.SendMessage(&message);
+
+	// Send current starte to deskbar replicant
+	BMessenger* replMessenger = _ReplicantMessenger();
+	if (replMessenger != NULL)
+		replMessenger->SendMessage(&message);
+}
+
+
+BMessenger*
+KeyCursorFilter::_ReplicantMessenger()
+{
+	BMessage request(B_GET_PROPERTY);
+	BMessenger to;
+	BMessenger status;
+
+	request.AddSpecifier("Messenger");
+	request.AddSpecifier("Shelf");
+
+	// In the Deskbar the Shelf is in the View "Status" in Window "Deskbar"
+	request.AddSpecifier("View", "Status");
+	request.AddSpecifier("Window", "Deskbar");
+	to = BMessenger("application/x-vnd.Be-TSKB", -1);
+
+	BMessage reply;
+
+	if (to.SendMessage(&request, &reply) == B_OK
+		&& reply.FindMessenger("result", &status) == B_OK) {
+		// enum replicant in Status view
+		int32 index = 0;
+		int32 uid;
+		while ((uid = _GetReplicantAt(status, index++)) >= B_OK) {
+			BMessage replicantInfo;
+			if (_GetReplicantName(status, uid, &replicantInfo) != B_OK)
+				continue;
+			const char *name;
+			if (replicantInfo.FindString("result", &name) == B_OK
+				&& !strcmp(name, REPLICANT_VIEW_NAME)) {
+				BMessage replicant;
+				if (_GetReplicantView(status, uid, &replicant) == B_OK) {
+					BMessenger result;
+					if (replicant.FindMessenger("result", &result) == B_OK)
+						return(new BMessenger(result));
+				}
+			}
+		}
+	}
+	return NULL;
+}
+
+
+int32
+KeyCursorFilter::_GetReplicantAt(BMessenger target, int32 index) const
+{
+	// So here we want to get the Unique ID of the replicant at the given index
+	// in the target Shelf.
+
+	BMessage request(B_GET_PROPERTY);// We're getting the ID property
+	BMessage reply;
+	status_t err;
+
+	request.AddSpecifier("ID"); // want the ID
+	request.AddSpecifier("Replicant", index); // of the index'th replicant
+
+	if ((err = target.SendMessage(&request, &reply)) != B_OK)
+		return err;
+
+	int32 uid;
+	if ((err = reply.FindInt32("result", &uid)) != B_OK)
+		return err;
+
+	return uid;
+}
+
+
+status_t
+KeyCursorFilter::_GetReplicantName(BMessenger target, int32 uid,
+	BMessage* reply) const
+{
+	// We send a message to the target shelf, asking it for the Name of the
+	// replicant with the given unique id.
+
+	BMessage request(B_GET_PROPERTY);
+	BMessage uid_specifier(B_ID_SPECIFIER); // specifying via ID
+	status_t err;
+	status_t e;
+
+	request.AddSpecifier("Name"); // ask for the Name of the replicant
+
+	// IDs are specified using code like the following 3 lines:
+	uid_specifier.AddInt32("id", uid);
+	uid_specifier.AddString("property", "Replicant");
+	request.AddSpecifier(&uid_specifier);
+
+	if ((err = target.SendMessage(&request, reply)) != B_OK)
+		return err;
+
+	if (((err = reply->FindInt32("error", &e)) != B_OK) || (e != B_OK))
+		return err ? err : e;
+
+	return B_OK;
+}
+
+
+status_t
+KeyCursorFilter::_GetReplicantView(BMessenger target, int32 uid, BMessage* reply) const
+{
+	// We send a message to the target shelf, asking it for the Name of the
+	// replicant with the given unique id.
+
+	BMessage request(B_GET_PROPERTY);
+	BMessage uid_specifier(B_ID_SPECIFIER);	// specifying via ID
+	status_t err;
+	status_t e;
+
+	request.AddSpecifier("View"); // ask for the Name of the replicant
+
+	// IDs are specified using code like the following 3 lines:
+	uid_specifier.AddInt32("id", uid);
+	uid_specifier.AddString("property", "Replicant");
+	request.AddSpecifier(&uid_specifier);
+
+	if ((err = target.SendMessage(&request, reply)) != B_OK)
+		return err;
+
+	if (((err = reply->FindInt32("error", &e)) != B_OK) || (e != B_OK))
+		return err ? err : e;
+
+	return B_OK;
 }

@@ -38,6 +38,7 @@ extern "C" _EXPORT BView* instantiate_deskbar_item(float maxWidth, float maxHeig
 
 #define APP_SIGNATURE "application/x-vnd.OscarL-KeyCursorSettings"
 #define REPLICANT_SIGNATURE "KeyCursorReplicant"
+#define REPLICANT_VIEW_NAME "KeyCursorView"
 
 #define KEY_CURSOR_DEVICE_NAME			"Keyboard Cursor"
 #define KEY_CURSOR_DEVICE_THREAD_NAME	"KeyCursorDevice"
@@ -85,6 +86,11 @@ private:
 			void			SendMessageToDevice(int32 what, int32 data = 0);
 			void			_RemoveFromDeskbar();
 			void			_SendStatus();
+
+			BMessenger*		_ReplicantMessenger();
+			int32			_GetReplicantAt(BMessenger target, int32 index) const;
+			status_t		_GetReplicantName(BMessenger target, int32 uid, BMessage* reply) const;
+			status_t		_GetReplicantView(BMessenger target, int32 uid, BMessage* reply) const;
 
 			// This thread will wait for preference's changes.
 			static int32	PrefsThreadFunc(void* cookie);
