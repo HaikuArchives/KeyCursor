@@ -35,6 +35,7 @@ private:
 
 	BStringView*	fStatusView;
 	ModifierBox* 	fModBox;
+	BCheckBox* 		fReplicantBox;
 	// BCheckBox* 		fEnabled;
 	BSlider* 		fAccelSlider;
 

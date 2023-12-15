@@ -14,6 +14,7 @@
 #include <View.h>
 
 #define	TOGGLE_CHANGED	'kcTC'
+#define	REPLICANT_CHANGED	'kcRC'
 // #define	ENABLED_CHANGED	'kcEC'
 #define	ACCEL_CHANGED	'kcAC'
 #define	PREFS_CHANGED	'kcPC'
@@ -43,6 +44,10 @@ public:
 	uint32	GetDefaultToggleModMask() { return B_OPTION_KEY; }
 	uint32	GetDefaultClickKeyMask() { return B_SPACE; }
 
+	bool	GetReplicant() { return fReplicant; }
+	void	SetReplicant(bool enabled) { fReplicant = enabled; }
+	void	SetReplicantToDefault() { fReplicant = true; }
+
 	// bool	GetEnabled() { return fEnabled; }
 	// void	SetEnabledToDefault() { fEnabled = true; }
 
@@ -68,6 +73,7 @@ protected:
 private:
 	uint32	fToggleModMask;
 	uint32	fClickKeyMask;
+	bool	fReplicant;
 	// bool	fEnabled;
 	float	fAcceleration;
 

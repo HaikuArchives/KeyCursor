@@ -44,6 +44,12 @@ SettingsWin::SettingsWin()
 	// fEnabled->SetValue(fPrefs.GetEnabled());
 	// fEnabled->MakeFocus(true);
 
+	// Deskbar replicant checkbox
+	fReplicantBox = new BCheckBox("enable", B_TRANSLATE("Show Deskbar replicant"),
+			new BMessage(REPLICANT_CHANGED));
+	fReplicantBox->SetValue(fPrefs.GetReplicant());
+	fReplicantBox->MakeFocus(true);
+
 	// Status bar
 	BString status(kStatusText);
 	status << " -";
@@ -90,6 +96,7 @@ SettingsWin::SettingsWin()
 	BLayoutBuilder::Group<>(this, B_VERTICAL)
 		.AddGroup(B_VERTICAL)
 			.SetInsets(B_USE_WINDOW_INSETS, B_USE_WINDOW_INSETS, B_USE_WINDOW_INSETS, 0)
+			.Add(fReplicantBox)
 			// .Add(fEnabled)
 		.End()
 		.Add(statusView)
@@ -119,6 +126,13 @@ SettingsWin::MessageReceived(BMessage* message)
 		{
 			fPrefs.SetToggleModMask(fModBox->GetModifierMask());
 
+			fPrefs.Save();
+			_SendMessageToFilter(PREFS_CHANGED);
+		} break;
+
+		case REPLICANT_CHANGED:
+		{
+			fPrefs.SetReplicant(fReplicantBox->Value());
 			fPrefs.Save();
 			_SendMessageToFilter(PREFS_CHANGED);
 		} break;

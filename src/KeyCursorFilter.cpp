@@ -59,6 +59,10 @@ KeyCursorFilter::KeyCursorFilter()
 	if (fPrefsThread >= 0)
 		resume_thread(fPrefsThread);
 
+	bool enabled = fPrefs.GetReplicant();
+	if (!enabled)
+		return;
+
 	BDeskbar deskbar;
 	// wait up to 10 seconds for Deskbar to become available
 	// in case it is not running (yet?)
@@ -78,7 +82,6 @@ KeyCursorFilter::KeyCursorFilter()
 	}
 
 	_AddToDeskbar();
-
 	_SendStatus();
 }
 
@@ -358,8 +361,16 @@ KeyCursorFilter::PrefsThreadFunc(void* cookie)
 		if (msg_code == PREFS_CHANGED) {
 			filter->fPrefs.Update();
 			filter->fNecessaryMods = filter->fPrefs.GetToggleModMask();
-
 			filter->SendMessageToDevice(PREFS_CHANGED);
+
+			BDeskbar deskbar;
+			bool enabled = filter->fPrefs.GetReplicant();
+			if (!enabled)
+				filter->_RemoveFromDeskbar();
+			else if (!deskbar.HasItem(REPLICANT_VIEW_NAME)) {
+				filter->_AddToDeskbar();
+				filter->_SendStatus();
+			}
 		} else if (msg_code == STATE)
 			filter->_SendStatus();
 	}
@@ -419,12 +430,6 @@ KeyCursorFilter::_SendStatus()
 BMessenger*
 KeyCursorFilter::_ReplicantMessenger()
 {
-	// make sure the replicant lives in the Deskbar
-	// for example, in case Deskbar was restarted
-	BDeskbar deskbar;
-	if (!deskbar.HasItem(REPLICANT_VIEW_NAME))
-		_AddToDeskbar();
-
 	BMessage request(B_GET_PROPERTY);
 	BMessenger to;
 	BMessenger status;
@@ -489,8 +494,7 @@ KeyCursorFilter::_GetReplicantAt(BMessenger target, int32 index) const
 
 
 status_t
-KeyCursorFilter::_GetReplicantName(BMessenger target, int32 uid,
-	BMessage* reply) const
+KeyCursorFilter::_GetReplicantName(BMessenger target, int32 uid, BMessage* reply) const
 {
 	// We send a message to the target shelf, asking it for the Name of the
 	// replicant with the given unique id.
