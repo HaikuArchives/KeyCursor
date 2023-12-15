@@ -41,7 +41,7 @@ public:
 	void	SetToggleModMask(uint32 mask) { fToggleModMask = mask; }
 	void	SetClickKeyMask(uint32 mask) { fClickKeyMask = mask; }
 
-	uint32	GetDefaultToggleModMask() { return B_OPTION_KEY; }
+	uint32	GetDefaultToggleModMask() { return B_SHIFT_KEY | B_OPTION_KEY; }
 	uint32	GetDefaultClickKeyMask() { return B_SPACE; }
 
 	bool	GetReplicant() { return fReplicant; }
