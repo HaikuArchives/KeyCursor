@@ -124,8 +124,8 @@ KeyCursorFilter::Filter(BMessage* message, BList* /*outList*/)
 	static bool toggleModPressedLast = false;
 	filter_result result = B_DISPATCH_MESSAGE;
 
-	if (!fPrefs.GetEnabled())
-		return result;
+	// if (!fPrefs.GetEnabled())
+		// return result;
 
 	switch (message->what) {
 		case B_UNMAPPED_KEY_DOWN:

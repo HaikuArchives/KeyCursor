@@ -14,7 +14,7 @@
 #include <View.h>
 
 #define	TOGGLE_CHANGED	'kcTC'
-#define	ENABLED_CHANGED	'kcEC'
+// #define	ENABLED_CHANGED	'kcEC'
 #define	ACCEL_CHANGED	'kcAC'
 #define	PREFS_CHANGED	'kcPC'
 
@@ -43,8 +43,8 @@ public:
 	uint32	GetDefaultToggleModMask() { return B_OPTION_KEY; }
 	uint32	GetDefaultClickKeyMask() { return B_SPACE; }
 
-	bool	GetEnabled() { return fEnabled; }
-	void	SetEnabledToDefault() { fEnabled = true; }
+	// bool	GetEnabled() { return fEnabled; }
+	// void	SetEnabledToDefault() { fEnabled = true; }
 
 	float	GetAcceleration() { return fAcceleration; }
 	void	SetDefaultAcceleration() { fAcceleration = 20.0; }
@@ -54,7 +54,7 @@ public:
 #ifdef I_AM_THE_PREFLET // if compiling the preflet...
 	void	Save();
 
-	void	SetEnabled(bool enabled) { fEnabled = enabled; }
+	// void	SetEnabled(bool enabled) { fEnabled = enabled; }
 	void	SetAcceleration(float accel) {fAcceleration = accel; }
 
 	BPoint	WindowCorner() const { return fCorner; }
@@ -68,7 +68,7 @@ protected:
 private:
 	uint32	fToggleModMask;
 	uint32	fClickKeyMask;
-	bool	fEnabled;
+	// bool	fEnabled;
 	float	fAcceleration;
 
 #ifdef I_AM_THE_PREFLET

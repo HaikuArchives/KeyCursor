@@ -43,7 +43,7 @@ Preferences::SetToDefault()
 {
 	SetToggleModMask(GetDefaultToggleModMask());
 	SetClickKeyMask(GetDefaultClickKeyMask());
-	SetEnabledToDefault();
+	// SetEnabledToDefault();
 	SetDefaultAcceleration();
 
 #ifdef I_AM_THE_PREFLET
@@ -84,7 +84,7 @@ Preferences::Load()
 
 	file->Read(&fToggleModMask, sizeof(uint32));
 	file->Read(&fClickKeyMask, sizeof(uint32));
-	file->Read(&fEnabled, sizeof(bool));
+	// file->Read(&fEnabled, sizeof(bool));
 	file->Read(&fAcceleration, sizeof(float));
 
 #ifdef I_AM_THE_PREFLET
@@ -110,7 +110,7 @@ Preferences::Save()
 
 	file->Write(&fToggleModMask, sizeof(uint32));
 	file->Write(&fClickKeyMask, sizeof(uint32));
-	file->Write(&fEnabled, sizeof(bool));
+	// file->Write(&fEnabled, sizeof(bool));
 	file->Write(&fAcceleration, sizeof(float));
 	file->Write(&fCorner, sizeof(BPoint));
 

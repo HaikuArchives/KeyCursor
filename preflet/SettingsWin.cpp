@@ -39,10 +39,10 @@ SettingsWin::SettingsWin()
 		B_ASYNCHRONOUS_CONTROLS | B_NOT_RESIZABLE | B_NOT_ZOOMABLE | B_AUTO_UPDATE_SIZE_LIMITS)
 {
 	// Enable checkbox
-	fEnabled = new BCheckBox("enable", B_TRANSLATE("Enable KeyCursor"),
-		new BMessage(ENABLED_CHANGED));
-	fEnabled->SetValue(fPrefs.GetEnabled());
-	fEnabled->MakeFocus(true);
+	// fEnabled = new BCheckBox("enable", B_TRANSLATE("Enable KeyCursor"),
+		// new BMessage(ENABLED_CHANGED));
+	// fEnabled->SetValue(fPrefs.GetEnabled());
+	// fEnabled->MakeFocus(true);
 
 	// Status bar
 	BString status(kStatusText);
@@ -71,7 +71,7 @@ SettingsWin::SettingsWin()
 	fModBox->SetDefaultModifierMask(fPrefs.GetDefaultClickKeyMask());
 	fModBox->SetMessage(new BMessage(TOGGLE_CHANGED));
 	fModBox->SetTarget(this);
-	fModBox->SetEnabled(fPrefs.GetEnabled());
+	// fModBox->SetEnabled(fPrefs.GetEnabled());
 
 	// Acceleration slider
 	fAccelSlider = new BSlider("accel_slider", B_TRANSLATE("Acceleration"),
@@ -82,7 +82,7 @@ SettingsWin::SettingsWin()
 	fAccelSlider->SetHashMarkCount(5);
 	fAccelSlider->SetValue(fPrefs.GetAcceleration());
 	fAccelSlider->SetLimitLabels(B_TRANSLATE("Min"), B_TRANSLATE("Max"));
-	fAccelSlider->SetEnabled(fPrefs.GetEnabled());
+	// fAccelSlider->SetEnabled(fPrefs.GetEnabled());
 	fAccelSlider->SetExplicitMinSize(
 		BSize(font.StringWidth("Quite a long string as window min width"),B_SIZE_UNSET));
 
@@ -90,7 +90,7 @@ SettingsWin::SettingsWin()
 	BLayoutBuilder::Group<>(this, B_VERTICAL)
 		.AddGroup(B_VERTICAL)
 			.SetInsets(B_USE_WINDOW_INSETS, B_USE_WINDOW_INSETS, B_USE_WINDOW_INSETS, 0)
-			.Add(fEnabled)
+			// .Add(fEnabled)
 		.End()
 		.Add(statusView)
 		.AddGroup(B_VERTICAL)
@@ -123,14 +123,14 @@ SettingsWin::MessageReceived(BMessage* message)
 			_SendMessageToFilter(PREFS_CHANGED);
 		} break;
 
-		case ENABLED_CHANGED:
-		{
-			fPrefs.SetEnabled(fEnabled->Value());
-			fPrefs.Save();
-			fModBox->SetEnabled(!fModBox->IsEnabled());
-			fAccelSlider->SetEnabled(!fAccelSlider->IsEnabled());
-			_SendMessageToFilter(PREFS_CHANGED);
-		} break;
+		// case ENABLED_CHANGED:
+		// {
+			// fPrefs.SetEnabled(fEnabled->Value());
+			// fPrefs.Save();
+			// fModBox->SetEnabled(!fModBox->IsEnabled());
+			// fAccelSlider->SetEnabled(!fAccelSlider->IsEnabled());
+			// _SendMessageToFilter(PREFS_CHANGED);
+		// } break;
 
 		case ACCEL_CHANGED:
 		{
