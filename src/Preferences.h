@@ -67,7 +67,7 @@ public:
 #endif
 
 protected:
-	BFile*	OpenFile(uint32 openMode);
+	BFile	OpenFile(uint32 openMode);
 	void	Load();
 
 private:

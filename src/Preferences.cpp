@@ -54,20 +54,13 @@ Preferences::SetToDefault()
 }
 
 
-BFile*
+BFile
 Preferences::OpenFile(uint32 openMode)
 {
 	BPath path;
 	find_directory(B_USER_SETTINGS_DIRECTORY, &path);
 	BDirectory dir(path.Path());
-	BFile* file = new BFile(&dir, kSettingsFileName, openMode);
-	status_t err;
-	err = file->InitCheck();
-
-	if (err != B_OK) {
-		delete file;
-		return 0;
-	}
+	BFile file(&dir, kSettingsFileName, openMode);
 
 	return file;
 }
@@ -78,25 +71,24 @@ Preferences::Load()
 {
 	SetToDefault();
 
-	BFile* file = OpenFile(B_READ_ONLY);
+	BFile file = OpenFile(B_READ_ONLY);
 
-	if (!file)
+	if (file.InitCheck() != B_OK)
 		return;
 
-	file->Read(&fToggleModMask, sizeof(uint32));
-	file->Read(&fClickKeyMask, sizeof(uint32));
-	file->Read(&fReplicant, sizeof(bool));
-	// file->Read(&fEnabled, sizeof(bool));
-	file->Read(&fAcceleration, sizeof(float));
-
+	BMessage settings;
+	if (settings.Unflatten(&file) == B_OK) {
+		settings.FindUInt32("togglemodmask", &fToggleModMask);
+		settings.FindUInt32("clickkeymask", &fClickKeyMask);
+		settings.FindBool("replicant", &fReplicant);
+		settings.FindFloat("acceleration", &fAcceleration);
 #ifdef I_AM_THE_PREFLET
-	if (file->Read(&fCorner, sizeof(BPoint)) != sizeof(BPoint)) {
-		fCorner.x = 50;
-		fCorner.y = 50;
-	};
+		if (settings.FindPoint("corner", &fCorner) != B_OK) {
+			fCorner.x = 50;
+			fCorner.y = 50;
+		}
 #endif
-
-	delete file;
+	}
 }
 
 #ifdef I_AM_THE_PREFLET // if compiling the preflet...
@@ -105,19 +97,20 @@ Preferences::Load()
 void
 Preferences::Save()
 {
-	BFile* file = OpenFile(B_WRITE_ONLY | B_CREATE_FILE);
+	BFile file = OpenFile(B_WRITE_ONLY | B_CREATE_FILE);
 
-	if (!file)
+	if (file.InitCheck() != B_OK)
 		return;
 
-	file->Write(&fToggleModMask, sizeof(uint32));
-	file->Write(&fClickKeyMask, sizeof(uint32));
-	file->Write(&fReplicant, sizeof(bool));
-	// file->Write(&fEnabled, sizeof(bool));
-	file->Write(&fAcceleration, sizeof(float));
-	file->Write(&fCorner, sizeof(BPoint));
+	BMessage settings;
+	settings.AddUInt32("togglemodmask", fToggleModMask);
+	settings.AddUInt32("clickkeymask", fClickKeyMask);
+	settings.AddBool("replicant", fReplicant);
+	settings.AddFloat("acceleration", fAcceleration);
+	settings.AddPoint("corner", fCorner);
 
-	delete file;
+	if (file.InitCheck() == B_OK)
+		settings.Flatten(&file);
 }
 
 
