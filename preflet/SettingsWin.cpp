@@ -37,11 +37,11 @@
 #undef B_TRANSLATION_CONTEXT
 #define B_TRANSLATION_CONTEXT "SettingsWindow"
 
-static const char* kStatusText = B_TRANSLATE_MARK("Current toggle state:");
+static const char* kStatusText = B_TRANSLATE("Current toggle state:");
 
 SettingsWin::SettingsWin()
 	:
-	BWindow(BRect(100, 100, 500, 300), B_TRANSLATE("KeyCursor settings"), B_TITLED_WINDOW,
+	BWindow(BRect(100, 100, 500, 300), B_TRANSLATE("KeyCursor preferences"), B_TITLED_WINDOW,
 		B_ASYNCHRONOUS_CONTROLS | B_NOT_RESIZABLE | B_NOT_ZOOMABLE | B_AUTO_UPDATE_SIZE_LIMITS)
 {
 	// Enable checkbox
@@ -51,7 +51,7 @@ SettingsWin::SettingsWin()
 	// fEnabled->MakeFocus(true);
 
 	// Deskbar replicant checkbox
-	fReplicantBox = new BCheckBox("enable", B_TRANSLATE("Show Deskbar replicant"),
+	fReplicantBox = new BCheckBox("enable", B_TRANSLATE("Show Deskbar icon"),
 			new BMessage(REPLICANT_CHANGED));
 	fReplicantBox->SetValue(fPrefs.GetReplicant());
 	fReplicantBox->MakeFocus(true);

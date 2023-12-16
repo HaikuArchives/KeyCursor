@@ -1,12 +1,21 @@
-1	English	application/x-vnd.OscarL-KeyCursorSettings	77331839
-Command	ModifierBox		ALT
-Min	SettingsWindow		Min
-Control	ModifierBox		STRG
+1	English	application/x-vnd.OscarL-KeyCursorSettings	2801326990
+About…	Replicant		Über …
+KeyCursor preferences	SettingsWindow		KeyCursor Einstellungen
 Menu	ModifierBox		Menü
-KeyCursor settings	SettingsWindow		KeyCursor Einstellungen
+on	SettingsWindow	Status as in on/off	ein
+off	SettingsWindow	Status as in on/off	aus
+Nathan Schrenk for his BeNewsletter article	AboutHelp		Nathan Schrenk für den BeNewsletter Artikel
+Current toggle state:	SettingsWindow		Aktueller Status:
+Show Deskbar icon	SettingsWindow		Deskbar Icon zeigen
+Command	ModifierBox		Befehl
+Thomas Thiriez for his EasyMove app	AboutHelp		Thomas Thiriez für die EasyMove App
+Min	SettingsWindow		Min
+Control	ModifierBox		Steuerung
+KeyCursor	System name		KeyCursor
 Shift	ModifierBox		Shift
 Acceleration	SettingsWindow		Beschleunigung
-Option	ModifierBox		OPT
+Preferences…	Replicant		Einstellungen …
+Option	ModifierBox		Option
 Max	SettingsWindow		Max
-Toggle keys	SettingsWindow		Ein-/Ausschalttasten
-Enable KeyCursor	SettingsWindow		KeyCursor aktivieren
+Toggle keys	SettingsWindow		Umschalttasten
+KeyCursor lets you control the mouse pointer with the keyboard.\nIn the preference window, you choose the modifier key combination that will toggle control on/off.\nWhen toggled on, the cursor keys will move the mouse pointer.\nHit SPACE for a left-click, SHIFT+SPACE for a right-click.	AboutHelp		Mit KeyCursor lässt sich der Mauszeiger mit der Tastatur steuern.\nIn den Einstellungen muss man dazu eine Tastenkombination wählen, die die Steuerung ein- und ausschaltet.\nIst sie aktiv, bewegen die Cursortasten Zeiger.\nDie LEERTASTE löst einen Linksklick aus,  SHIFT+LEERTASTE einen Rechtsklick.

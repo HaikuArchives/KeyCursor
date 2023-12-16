@@ -1,12 +1,21 @@
-1	English	application/x-vnd.OscarL-KeyCursorSettings	77331839
+1	English	application/x-vnd.OscarL-KeyCursorSettings	2801326990
+About…	Replicant		About…
+KeyCursor preferences	SettingsWindow		KeyCursor preferences
+Menu	ModifierBox		Menu
+on	SettingsWindow	Status as in on/off	on
+off	SettingsWindow	Status as in on/off	off
+Nathan Schrenk for his BeNewsletter article	AboutHelp		Nathan Schrenk for his BeNewsletter article
+Current toggle state:	SettingsWindow		Current toggle state:
+Show Deskbar icon	SettingsWindow		Show Deskbar icon
 Command	ModifierBox		Command
+Thomas Thiriez for his EasyMove app	AboutHelp		Thomas Thiriez for his EasyMove app
 Min	SettingsWindow		Min
 Control	ModifierBox		Control
-Menu	ModifierBox		Menu
-KeyCursor settings	SettingsWindow		KeyCursor settings
+KeyCursor	System name		KeyCursor
 Shift	ModifierBox		Shift
 Acceleration	SettingsWindow		Acceleration
+Preferences…	Replicant		Preferences…
 Option	ModifierBox		Option
 Max	SettingsWindow		Max
 Toggle keys	SettingsWindow		Toggle keys
-Enable KeyCursor	SettingsWindow		Enable KeyCursor
+KeyCursor lets you control the mouse pointer with the keyboard.\nIn the preference window, you choose the modifier key combination that will toggle control on/off.\nWhen toggled on, the cursor keys will move the mouse pointer.\nHit SPACE for a left-click, SHIFT+SPACE for a right-click.	AboutHelp		KeyCursor lets you control the mouse pointer with the keyboard.\nIn the preference window, you choose the modifier key combination that will toggle control on/off.\nWhen toggled on, the cursor keys will move the mouse pointer.\nHit SPACE for a left-click, SHIFT+SPACE for a right-click.
