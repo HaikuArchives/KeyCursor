@@ -25,6 +25,7 @@
 #include <TextView.h>
 #include <View.h>
 
+#include "KeyCursor.h"
 #include "ModifierBox.h"
 #include "ModifierView.h"
 #include "SettingsWin.h"
@@ -189,7 +190,7 @@ SettingsWin::MessageReceived(BMessage* message)
 
 		case ABOUT:
 		{
-			printf("KeyCursor: ABOUT\n");
+			ShowAbout();
 		} break;
 
 		default:

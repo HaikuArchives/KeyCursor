@@ -13,7 +13,6 @@
 
 #include "Preferences.h"
 
-#define ABOUT	'abut'
 
 class BCheckBox;
 class BButton;

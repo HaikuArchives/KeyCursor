@@ -33,7 +33,6 @@ public:
 private:
 			void	_Init();
 			void	_Remove();
-			void	_ShowAbout();
 
 	bool			fState;
 	BBitmap*		fIconOff;

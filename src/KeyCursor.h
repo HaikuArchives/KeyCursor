@@ -36,6 +36,8 @@ extern "C" _EXPORT BInputServerDevice* instantiate_input_device();
 extern "C" _EXPORT BInputServerFilter* instantiate_input_filter();
 extern "C" _EXPORT BView* instantiate_deskbar_item(float maxWidth, float maxHeight);
 
+void ShowAbout();
+
 #define APP_SIGNATURE "application/x-vnd.OscarL-KeyCursorSettings"
 #define REPLICANT_SIGNATURE "KeyCursorReplicant"
 #define REPLICANT_VIEW_NAME "KeyCursorView"

@@ -10,7 +10,6 @@
 
 #include "ReplicantView.h"
 
-#include <AboutWindow.h>
 #include <Alert.h>
 #include <Bitmap.h>
 #include <Catalog.h>
@@ -103,7 +102,7 @@ ReplicantView::MessageReceived(BMessage* message)
 {
 	switch (message->what) {
 		case ABOUT:
-			_ShowAbout();
+			ShowAbout();
 			break;
 
 		case OPEN_PREFS:
@@ -198,31 +197,4 @@ ReplicantView::_Init()
 		else
 			delete icon;
 	}
-}
-
-
-void
-ReplicantView::_ShowAbout()
-{
-	BAboutWindow* aboutwindow
-		= new BAboutWindow(B_TRANSLATE_SYSTEM_NAME("KeyCursor"), APP_SIGNATURE);
-
-	const char* authors[] = {
-		"Oscar Lesta",
-		"Humdinger",
-		NULL
-	};
-
-	aboutwindow->AddCopyright(2004, "Oscar Lesta");
-	aboutwindow->AddAuthors(authors);
-	aboutwindow->AddDescription(B_TRANSLATE(
-		"KeyCursor lets you control the mouse pointer with the keyboard."));
-
-	const char* thanks[] = {
-		B_TRANSLATE("Nathan Schrenk for his BeNewsletter article"),
-		B_TRANSLATE("Thomas Thiriez for his EasyMove app"),
-		NULL
-	};
-	aboutwindow->AddSpecialThanks(thanks);
-	aboutwindow->Show();
 }
