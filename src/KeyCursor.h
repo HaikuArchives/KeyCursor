@@ -69,6 +69,7 @@ void ShowAbout();
 // message codes to control the filter/device
 #define QUIT_COMMAND		'quIT'
 #define STATE				'stat'
+#define TOGGLE				'togl'
 
 // messages of the replicant
 #define ABOUT				'abut'
@@ -89,6 +90,7 @@ private:
 			void			_AddToDeskbar();
 			void			_RemoveFromDeskbar();
 			void			_SendStatus();
+			void			_Toggle();
 
 			BMessenger*		_ReplicantMessenger();
 			int32			_GetReplicantAt(BMessenger target, int32 index) const;

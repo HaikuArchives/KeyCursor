@@ -132,6 +132,9 @@ ReplicantView::MouseDown(BPoint point)
 		ConvertToScreen(&point);
 		fPopup->Go(point, true, true, BRect(point, point + BPoint(20, 20)), true);
 	}
+
+	if (buttons & B_PRIMARY_MOUSE_BUTTON)
+		_SendMessageToFilter(TOGGLE);
 }
 
 
@@ -197,4 +200,16 @@ ReplicantView::_Init()
 		else
 			delete icon;
 	}
+}
+
+
+void
+ReplicantView::_SendMessageToFilter(int32 code)
+{
+	port_id port = find_port(KEY_CURSOR_PREFS_PORT_NAME);
+
+	if (port < 0)
+		return;
+
+	write_port(port, code, NULL, 0);
 }

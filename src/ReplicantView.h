@@ -32,7 +32,7 @@ public:
 
 private:
 			void	_Init();
-			void	_Remove();
+			void 	_SendMessageToFilter(int32 code);
 
 	bool			fState;
 	BBitmap*		fIconOff;
