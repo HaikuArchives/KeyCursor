@@ -9,9 +9,14 @@
 
 
 #include <Application.h>
+#include <Bitmap.h>
 #include <Box.h>
+#include <Button.h>
 #include <Catalog.h>
+#include <IconUtils.h>
 #include <LayoutBuilder.h>
+#include <Roster.h>
+#include <Resources.h>
 #include <Screen.h>
 #include <SeparatorView.h>
 #include <Slider.h>
@@ -50,6 +55,18 @@ SettingsWin::SettingsWin()
 	fReplicantBox->SetValue(fPrefs.GetReplicant());
 	fReplicantBox->MakeFocus(true);
 
+	// Deskbar replicant icon button
+	BFont font = *be_plain_font;
+	font_height fontHeight;
+	font.GetHeight(&fontHeight);
+	float height = ceilf(fontHeight.ascent + fontHeight.descent + fontHeight.leading);
+
+	_LoadIcons(BRect(height * 2));
+
+	fIconButton = new BButton(NULL, new BMessage(ABOUT));
+	fIconButton->SetFlat(true);
+	fIconButton->SetIcon(fIconOff);
+
 	// Status bar
 	BString status(kStatusText);
 	status << " -";
@@ -63,10 +80,6 @@ SettingsWin::SettingsWin()
 		.Add(fStatusView)
 		.Add(new BSeparatorView(B_HORIZONTAL));
 
-	BFont font = *be_plain_font;
-	font_height fontHeight;
-	font.GetHeight(&fontHeight);
-	float height = ceilf(fontHeight.ascent + fontHeight.descent + fontHeight.leading);
 	statusView->SetExplicitMinSize(BSize(B_SIZE_UNSET, height * 1.5));
 	rgb_color color = tint_color(ui_color(B_PANEL_BACKGROUND_COLOR), B_DARKEN_1_TINT);
 	statusView->SetViewColor(color);
@@ -93,15 +106,20 @@ SettingsWin::SettingsWin()
 		BSize(font.StringWidth("Quite a long string as window min width"),B_SIZE_UNSET));
 
 	// Building layout
-	BLayoutBuilder::Group<>(this, B_VERTICAL)
-		.AddGroup(B_VERTICAL)
-			.SetInsets(B_USE_WINDOW_INSETS, B_USE_WINDOW_INSETS, B_USE_WINDOW_INSETS, 0)
-			.Add(fReplicantBox)
-			// .Add(fEnabled)
+	BLayoutBuilder::Group<>(this, B_VERTICAL, 0)
+		.AddGroup(B_HORIZONTAL, 0)
+			.SetInsets(B_USE_WINDOW_INSETS, 2, 2, 2)
+			// .AddGroup(B_VERTICAL)
+				.Add(fReplicantBox)
+				// .Add(fEnabled)
+			// .End()
+			.AddGlue()
+			.Add(fIconButton)
 		.End()
 		.Add(statusView)
 		.AddGroup(B_VERTICAL)
-			.SetInsets(B_USE_WINDOW_INSETS, 0, B_USE_WINDOW_INSETS, B_USE_WINDOW_INSETS)
+			.SetInsets(B_USE_WINDOW_INSETS, B_USE_WINDOW_INSETS,
+				B_USE_WINDOW_INSETS, B_USE_WINDOW_INSETS)
 			.Add(fModBox)
 			.Add(fAccelSlider)
 		.End();
@@ -160,17 +178,18 @@ SettingsWin::MessageReceived(BMessage* message)
 		case STATE:
 		{
 			bool state;
-			BString text(kStatusText);
-			text << " ";
-			if (message->FindBool("status", &state) == B_OK) {
-				if (state == true)
-					text << B_TRANSLATE_COMMENT("on", "Status as in on/off");
-				else
-					text << B_TRANSLATE_COMMENT("off", "Status as in on/off");
-			} else
-				text << "-";
+			if (message->FindBool("status", &state) == B_OK)
+				_SwitchState(state);
+			else {
+				BString text(kStatusText);
+				text << " -";
+				fStatusView->SetText(text);
+			}
+		} break;
 
-			fStatusView->SetText(text);
+		case ABOUT:
+		{
+			printf("KeyCursor: ABOUT\n");
 		} break;
 
 		default:
@@ -191,6 +210,43 @@ SettingsWin::QuitRequested()
 
 
 void
+SettingsWin::_LoadIcons(BRect rect)
+{
+	app_info info;
+	status_t status = be_app->GetAppInfo(&info);
+	if (status != B_OK)
+		return;
+
+	BResources resources(&info.ref);
+	if (resources.InitCheck() < B_OK)
+		return;
+
+	fIconOff = NULL;
+	fIconOn = NULL;
+	size_t size;
+	const void* data = resources.LoadResource(B_VECTOR_ICON_TYPE, "tray_icon_off", &size);
+	if (data != NULL) {
+		BBitmap* icon = new BBitmap(rect, B_RGBA32);
+		if (icon->InitCheck() == B_OK
+			&& BIconUtils::GetVectorIcon((const uint8*)data, size, icon) == B_OK)
+			fIconOff = icon;
+		else
+			delete icon;
+	}
+
+	data = resources.LoadResource(B_VECTOR_ICON_TYPE, "tray_icon_on", &size);
+	if (data != NULL) {
+		BBitmap* icon = new BBitmap(rect, B_RGBA32);
+		if (icon->InitCheck() == B_OK
+			&& BIconUtils::GetVectorIcon((const uint8*)data, size, icon) == B_OK)
+			fIconOn = icon;
+		else
+			delete icon;
+	}
+}
+
+
+void
 SettingsWin::_SendMessageToFilter(int32 code)
 {
 	port_id port = find_port(KEY_CURSOR_PREFS_PORT_NAME);
@@ -199,4 +255,21 @@ SettingsWin::_SendMessageToFilter(int32 code)
 		return;
 
 	write_port(port, code, NULL, 0);
+}
+
+
+void
+SettingsWin::_SwitchState(bool state)
+{
+	BString text(kStatusText);
+	text << " ";
+	if (state == true) {
+		text << B_TRANSLATE_COMMENT("on", "Status as in on/off");
+		fIconButton->SetIcon(fIconOn);
+	} else {
+		text << B_TRANSLATE_COMMENT("off", "Status as in on/off");
+		fIconButton->SetIcon(fIconOff);
+	}
+
+	fStatusView->SetText(text);
 }

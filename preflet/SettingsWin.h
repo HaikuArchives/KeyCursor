@@ -13,11 +13,13 @@
 
 #include "Preferences.h"
 
+#define ABOUT	'abut'
 
+class BCheckBox;
+class BButton;
 class BView;
 class BSlider;
 class BStringView;
-class BCheckBox;
 class ModifierView;
 class ModifierBox;
 
@@ -31,12 +33,17 @@ public:
 	virtual bool 	QuitRequested();
 
 private:
+			void	_LoadIcons(BRect rect);
 			void 	_SendMessageToFilter(int32 code);
+			void	_SwitchState(bool state);
 
-	BStringView*	fStatusView;
-	ModifierBox* 	fModBox;
+	BBitmap*		fIconOff;
+	BBitmap*		fIconOn;
+	BButton*		fIconButton;
 	BCheckBox* 		fReplicantBox;
 	// BCheckBox* 		fEnabled;
+	BStringView*	fStatusView;
+	ModifierBox* 	fModBox;
 	BSlider* 		fAccelSlider;
 
 	Preferences 	fPrefs;
