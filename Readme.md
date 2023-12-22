@@ -1,32 +1,38 @@
-# KeyCursor version 1.2
+![KeyCursor icon](./artwork/icon_64.png) **KeyCursor** for [Haiku](https://www.haiku-os.org)
+
+* * *
 
 - (original version) by Nathan Schrenk.
 - originally posted on BeBits by Eugenia Loli-Queru.
-- (this version) by Oscar Lesta.
+- (this version) by Oscar Lesta and GUI tweaks by Humdinger.
 
 ## What is this?
 
-It's just an update to Nathan Schrenk's mighty KeyCursor input_server add-on.
-Read his BeNewsLetter article to find more (included as article.txt).
+It's an update to Nathan Schrenk's mighty KeyCursor input_server add-on.    
+Read his [BeNewsLetter article](article.txt) to find out more.
 
-This one does all the original version did (let you simulate a mouse using the keyboard) plus:
+This one does all the original version did (let you simulate a mouse using the keyboard), and more.
+
+![Preference panel](./artwork/screenshot.png)
 
 - Now you have a little preferences app that allows you to:
-	- choose which keys will toggle KeyCursor On/Off
+	- choose which keys will toggle KeyCursor on/off
 	- configure the acceleration factor
-	- disable KeyCursor usage, so you don't turn it on by accident.
+	- show a replicant that'll show the on/off state
 
 - PageUp and PageDown act as a vertical mouse wheel when KeyCursor its active.
 
-  Just try it on Web+, it gives you a smooth scroll effect, kinda. I find it very useful to read the BeBook, mouseless :-)
+Just try it on Web+, it gives you a smooth scroll effect, kinda. I find it very useful to read
+the BeBook, mouseless :-)
 
 ## Basic usage:
 
 Hit and release the toggle key(s) to activate KeyCursor, then use the arrow keys to move the cursor.
 
-The space bar key acts as the primary button, and if you press SHIFT while "clicking" with the space key, you get a secondary button event.
+The SPACEBAR acts as the primary button (left-click), together with SHIFT you get a secondary 
+button event (right-click).
 
-Hit again the toggle key(s) to deactivate it.
+Hit the toggle key(s) again to deactivate KeyCursor.
 
 ## How to (un) install it?
 
@@ -39,27 +45,29 @@ If compiling/installing from sources: Use the provided install.sh/uninstall.sh s
 
 ## What else do I need to know?
 
-The Preflet only allows you to configure the "toggle-keys" and not the "click" or "move" keys. That's because the later are just fine for me. The source code it's included, just in case you want to make it more complete.
+The preflet allows you to configure the "togglekeys", but not the "click" or "move" keys. 
+Pull-requests are welcome, in case you want to make it more complete.
 
-Interaction with other input filters: works OK with InstantClick and TwoWheels (the ones I use). Your milleage will vary.
+Interaction with other input filters: works OK with InstantClick and TwoWheels (the ones I use). 
+Your mileage may vary.
 
-To build from sources, just type make at the shell, then use the install scripts.
+To build from sources, just type "make" and "make bindcatalogs" (to include localizations), 
+then use the install scripts.
 
-As requested by previous mantainer, I'll let you know where to get the older versions:
+As requested by the previous maintainer, I'll let you know where to get the older versions:
 
 - Eugenia's version:
-
   - http://bezip.de/app/777/
   - https://pulkomandy.tk/~beosarchive/unsorted/BDifferent/System/Add-Ons/input_server/KeyCursor-1.0.zip
 
 - Nathan's (original) version:
-
   - https://pulkomandy.tk/~beosarchive/unsorted/ftp.ntua.gr/mirror/BeOS/samples/input_server/KeyCursor.zip
 
 ## Thanks to:
 
-- Nathan Schrenk - for the original version, quite handy when things go wrong with your  input_server device hacking efforts.
-- Thomas Thiriez - I used part of his EasyMove input_server filter addon and prefs app.
+- Nathan Schrenk - for the original version, quite handy when things go wrong with your 
+input_server device hacking efforts.
+- Thomas Thiriez - for parts of his EasyMove input_server filter addon and prefs app.
 - OBOS (now Haiku) devs - I used some bytes from their cvs too.
 - Eugenia - for transfering the app to me.
 
@@ -69,9 +77,13 @@ Newer versions, if any, will be available here: https://github.com/HaikuArchives
 
 1.2 Haiku-only from now on...
 
-Fixed the issue where Tracker didn't registered double-clicks [issue#1](https://github.com/HaikuArchives/KeyCursor/issues/1)
+- Added Deskbar replicant.
+- Added layout management and localization.
+- Added status view to preflet.
+- Added vector icons.
+- Changed settings format (flattened BMessage to be future proof).
+- Minor changes and cleanups.
 
-Minor changes and cleanups.
 
 1.1 First version:
 
