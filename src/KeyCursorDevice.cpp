@@ -263,6 +263,10 @@ KeyCursorDevice::ProcessMessage(int32 what, int32 data)
 
 		case BUTTON_UP:
 		{
+			fClickedButton = 0;
+			fLastClick = 0;
+			fClickCount = 0;
+
 			BMessage* event = new BMessage(B_MOUSE_UP);
 			event->AddInt64("when", now);
 			event->AddInt32("x", 0);
