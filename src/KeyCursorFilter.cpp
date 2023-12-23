@@ -432,6 +432,13 @@ KeyCursorFilter::_Toggle()
 	fToggleOn = !fToggleOn;
 	beep();
 
+	// re-add replicant if it got lost, e.g. Deskbar was restarted
+	BDeskbar deskbar;
+	bool inDeskbar = deskbar.HasItem(REPLICANT_VIEW_NAME);
+	bool enabled = fPrefs.GetReplicant();
+	if (enabled && !inDeskbar)
+		_AddToDeskbar();
+
 	_SendStatus();
 }
 
