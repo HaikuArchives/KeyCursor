@@ -417,12 +417,15 @@ KeyCursorFilter::_SendStatus()
 
 	// Send current state to preference app
 	BMessenger prefMessenger(APP_SIGNATURE);
-	prefMessenger.SendMessage(&message);
+	if (prefMessenger.IsValid())
+		prefMessenger.SendMessage(&message);
 
 	// Send current starte to deskbar replicant
 	BMessenger* replMessenger = _ReplicantMessenger();
-	if (replMessenger != NULL)
-		replMessenger->SendMessage(&message);
+	if (replMessenger != NULL) {
+		if (replMessenger->IsValid() == true)
+			replMessenger->SendMessage(&message);
+	}
 }
 
 

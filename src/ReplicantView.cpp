@@ -83,7 +83,7 @@ ReplicantView::AttachedToWindow()
 void
 ReplicantView::Draw(BRect rect)
 {
-	if (!fIconOn || !fIconOff) {
+	if (fIconOn == NULL || fIconOff == NULL) {
 		// At least display something...
 		rgb_color lowColor = LowColor();
 		SetLowColor(0, 113, 187, 255);
@@ -166,6 +166,9 @@ ReplicantView::Instantiate(BMessage* dataMsg)
 void
 ReplicantView::_Init()
 {
+	fIconOff = NULL;
+	fIconOn = NULL;
+
 	image_info info;
 	if (our_image(info) != B_OK)
 		return;
@@ -178,8 +181,6 @@ ReplicantView::_Init()
 	if (resources.InitCheck() < B_OK)
 		return;
 
-	fIconOff = NULL;
-	fIconOn = NULL;
 	size_t size;
 	const void* data = resources.LoadResource(B_VECTOR_ICON_TYPE, "tray_icon_off", &size);
 	if (data != NULL) {
