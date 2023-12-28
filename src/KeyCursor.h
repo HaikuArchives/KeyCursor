@@ -86,11 +86,13 @@ public:
 	virtual	filter_result	Filter(BMessage* message, BList* outList);
 
 private:
-			void			SendMessageToDevice(int32 what, int32 data = 0);
-			void			_AddToDeskbar();
-			void			_RemoveFromDeskbar();
+			void			_SendMessageToDevice(int32 what, int32 data = 0);
 			void			_SendStatus();
 			void			_Toggle();
+
+			void			_AddToDeskbar();
+			void			_RemoveFromDeskbar();
+			bool			_IsLivingInDeskbar();
 
 			BMessenger*		_ReplicantMessenger();
 			int32			_GetReplicantAt(BMessenger target, int32 index) const;

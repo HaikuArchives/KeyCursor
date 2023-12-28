@@ -44,9 +44,9 @@ public:
 	uint32	GetDefaultToggleModMask() { return B_SHIFT_KEY | B_OPTION_KEY; }
 	uint32	GetDefaultClickKeyMask() { return B_SPACE; }
 
-	bool	GetReplicant() { return fReplicant; }
-	void	SetReplicant(bool enabled) { fReplicant = enabled; }
-	void	SetReplicantToDefault() { fReplicant = true; }
+	bool	GetReplicantEnabled() { return fReplicant; }
+	void	SetReplicantEnabled(bool enabled) { fReplicant = enabled; }
+	void	SetReplicantEnabledToDefault() { fReplicant = true; }
 
 	// bool	GetEnabled() { return fEnabled; }
 	// void	SetEnabledToDefault() { fEnabled = true; }

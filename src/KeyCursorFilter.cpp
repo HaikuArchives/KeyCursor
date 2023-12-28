@@ -59,7 +59,7 @@ KeyCursorFilter::KeyCursorFilter()
 	if (fPrefsThread >= 0)
 		resume_thread(fPrefsThread);
 
-	bool enabled = fPrefs.GetReplicant();
+	bool enabled = fPrefs.GetReplicantEnabled();
 	if (!enabled)
 		return;
 
@@ -82,14 +82,12 @@ KeyCursorFilter::KeyCursorFilter()
 	}
 
 	_AddToDeskbar();
-	_SendStatus();
 }
 
 
 KeyCursorFilter::~KeyCursorFilter()
 {
-	BDeskbar deskbar;
-	if (deskbar.HasItem(REPLICANT_VIEW_NAME))
+	if (_IsLivingInDeskbar())
 		_RemoveFromDeskbar();
 
 	if (fPrefsThread != -1)
@@ -105,7 +103,7 @@ KeyCursorFilter::InitCheck()
 
 
 void
-KeyCursorFilter::SendMessageToDevice(int32 what, int32 data)
+KeyCursorFilter::_SendMessageToDevice(int32 what, int32 data)
 {
 	// locate the device looper if it hasn't been set yet
 	if (fPortID < 0) {
@@ -191,7 +189,7 @@ KeyCursorFilter::Filter(BMessage* message, BList* /*outList*/)
 							if (!fLeftPressed) {
 								if (mods == fNecessaryMods) {
 									fLeftPressed = true;
-									SendMessageToDevice(LEFT_KEY_DOWN);
+									_SendMessageToDevice(LEFT_KEY_DOWN);
 								} else {
 									result = B_DISPATCH_MESSAGE;
 								}
@@ -202,7 +200,7 @@ KeyCursorFilter::Filter(BMessage* message, BList* /*outList*/)
 							if (!fRightPressed) {
 								if (mods == fNecessaryMods) {
 									fRightPressed = true;
-									SendMessageToDevice(RIGHT_KEY_DOWN);
+									_SendMessageToDevice(RIGHT_KEY_DOWN);
 								} else {
 									result = B_DISPATCH_MESSAGE;
 								}
@@ -213,7 +211,7 @@ KeyCursorFilter::Filter(BMessage* message, BList* /*outList*/)
 							if (!fUpPressed) {
 								if (mods == fNecessaryMods) {
 									fUpPressed = true;
-									SendMessageToDevice(UP_KEY_DOWN);
+									_SendMessageToDevice(UP_KEY_DOWN);
 								} else {
 									result = B_DISPATCH_MESSAGE;
 								}
@@ -224,7 +222,7 @@ KeyCursorFilter::Filter(BMessage* message, BList* /*outList*/)
 							if (!fDownPressed) {
 								if (mods == fNecessaryMods) {
 									fDownPressed = true;
-									SendMessageToDevice(DOWN_KEY_DOWN);
+									_SendMessageToDevice(DOWN_KEY_DOWN);
 								} else {
 									result = B_DISPATCH_MESSAGE;
 								}
@@ -235,7 +233,7 @@ KeyCursorFilter::Filter(BMessage* message, BList* /*outList*/)
 							if (!fWheelUpPressed) {
 								if (mods == fNecessaryMods) {
 									fWheelUpPressed = true;
-									SendMessageToDevice(PAGE_UP_KEY_DOWN);
+									_SendMessageToDevice(PAGE_UP_KEY_DOWN);
 								} else {
 									result = B_DISPATCH_MESSAGE;
 								}
@@ -246,7 +244,7 @@ KeyCursorFilter::Filter(BMessage* message, BList* /*outList*/)
 							if (!fWheelDownPressed) {
 								if (mods == fNecessaryMods) {
 									fWheelDownPressed = true;
-									SendMessageToDevice(PAGE_DOWN_KEY_DOWN);
+									_SendMessageToDevice(PAGE_DOWN_KEY_DOWN);
 								} else {
 									result = B_DISPATCH_MESSAGE;
 								}
@@ -258,7 +256,7 @@ KeyCursorFilter::Filter(BMessage* message, BList* /*outList*/)
 								if (mods == fNecessaryMods) {
 									// space is button 1, shift-space is button 2
 									fButtonPressed = (origMods & B_SHIFT_KEY) ? 2 : 1;
-									SendMessageToDevice(BUTTON_DOWN, (int32) fButtonPressed);
+									_SendMessageToDevice(BUTTON_DOWN, (int32) fButtonPressed);
 								} else {
 									result = B_DISPATCH_MESSAGE;
 								}
@@ -278,7 +276,7 @@ KeyCursorFilter::Filter(BMessage* message, BList* /*outList*/)
 						case B_LEFT_ARROW:
 							if (fLeftPressed) {
 								fLeftPressed = false;
-								SendMessageToDevice(LEFT_KEY_UP);
+								_SendMessageToDevice(LEFT_KEY_UP);
 								result = B_SKIP_MESSAGE;
 							}
 							break;
@@ -286,7 +284,7 @@ KeyCursorFilter::Filter(BMessage* message, BList* /*outList*/)
 						case B_RIGHT_ARROW:
 							if (fRightPressed) {
 								fRightPressed = false;
-								SendMessageToDevice(RIGHT_KEY_UP);
+								_SendMessageToDevice(RIGHT_KEY_UP);
 								result = B_SKIP_MESSAGE;
 							}
 							break;
@@ -294,7 +292,7 @@ KeyCursorFilter::Filter(BMessage* message, BList* /*outList*/)
 						case B_UP_ARROW:
 							if (fUpPressed) {
 								fUpPressed = false;
-								SendMessageToDevice(UP_KEY_UP);
+								_SendMessageToDevice(UP_KEY_UP);
 								result = B_SKIP_MESSAGE;
 							}
 							break;
@@ -302,7 +300,7 @@ KeyCursorFilter::Filter(BMessage* message, BList* /*outList*/)
 						case B_DOWN_ARROW:
 							if (fDownPressed) {
 								fDownPressed = false;
-								SendMessageToDevice(DOWN_KEY_UP);
+								_SendMessageToDevice(DOWN_KEY_UP);
 								result = B_SKIP_MESSAGE;
 							}
 							break;
@@ -310,7 +308,7 @@ KeyCursorFilter::Filter(BMessage* message, BList* /*outList*/)
 						case B_PAGE_UP:
 							if (fWheelUpPressed) {
 								fWheelUpPressed = false;
-								SendMessageToDevice(PAGE_UP_KEY_UP);
+								_SendMessageToDevice(PAGE_UP_KEY_UP);
 								result = B_SKIP_MESSAGE;
 							}
 							break;
@@ -318,14 +316,14 @@ KeyCursorFilter::Filter(BMessage* message, BList* /*outList*/)
 						case B_PAGE_DOWN:
 							if (fWheelDownPressed) {
 								fWheelDownPressed = false;
-								SendMessageToDevice(PAGE_DOWN_KEY_UP);
+								_SendMessageToDevice(PAGE_DOWN_KEY_UP);
 								result = B_SKIP_MESSAGE;
 							}
 							break;
 
 						case B_SPACE:
 							if (fButtonPressed != 0) {
-								SendMessageToDevice(BUTTON_UP, fButtonPressed);
+								_SendMessageToDevice(BUTTON_UP, fButtonPressed);
 								fButtonPressed = 0;
 								result = B_SKIP_MESSAGE;
 							}
@@ -358,18 +356,17 @@ KeyCursorFilter::PrefsThreadFunc(void* cookie)
 		if (msg_code == PREFS_CHANGED) {
 			filter->fPrefs.Update();
 			filter->fNecessaryMods = filter->fPrefs.GetToggleModMask();
-			filter->SendMessageToDevice(PREFS_CHANGED);
+			filter->_SendMessageToDevice(PREFS_CHANGED);
 
-			BDeskbar deskbar;
-			bool enabled = filter->fPrefs.GetReplicant();
+			bool enabled = filter->fPrefs.GetReplicantEnabled();
 			if (!enabled)
 				filter->_RemoveFromDeskbar();
-			else if (!deskbar.HasItem(REPLICANT_VIEW_NAME)) {
+			else if (!filter->_IsLivingInDeskbar())
 				filter->_AddToDeskbar();
-				filter->_SendStatus();
-			}
+
 		} else if (msg_code == STATE)
 			filter->_SendStatus();
+
 		else if (msg_code == TOGGLE)
 			filter->_Toggle();
 	}
@@ -381,16 +378,24 @@ KeyCursorFilter::PrefsThreadFunc(void* cookie)
 void
 KeyCursorFilter::_AddToDeskbar()
 {
-	BDeskbar deskbar;
-	if (deskbar.HasItem(REPLICANT_VIEW_NAME))
+	if (_IsLivingInDeskbar())
 		_RemoveFromDeskbar();
 
+	bool enabled = fPrefs.GetReplicantEnabled();
+	if (!enabled)
+		return;
+
+	BDeskbar deskbar;
 	float height = deskbar.MaxItemHeight();
 	BRect rect(0, 0, height - 1, height - 1);
 	ReplicantView* replicant = new ReplicantView(rect);
-	status_t res = deskbar.AddItem(replicant);
-	if (res != B_OK)
+	status_t result = deskbar.AddItem(replicant);
+	if (result != B_OK) {
 		syslog(LOG_INFO, "KeyCursorFilter: couldn't add replicant.");
+		return;
+	}
+
+	_SendStatus();
 }
 
 
@@ -409,6 +414,17 @@ KeyCursorFilter::_RemoveFromDeskbar()
 }
 
 
+bool
+KeyCursorFilter::_IsLivingInDeskbar()
+{
+	BDeskbar deskbar;
+	if (deskbar.HasItem(REPLICANT_VIEW_NAME))
+		return true;
+
+	return false;
+}
+
+
 void
 KeyCursorFilter::_SendStatus()
 {
@@ -420,7 +436,17 @@ KeyCursorFilter::_SendStatus()
 	if (prefMessenger.IsValid())
 		prefMessenger.SendMessage(&message);
 
-	// Send current starte to deskbar replicant
+	// Send current state to deskbar replicant if enabled
+	bool enabled = fPrefs.GetReplicantEnabled();
+	if (!enabled)
+		return;
+
+	// re-add replicant if it got lost, e.g. Deskbar was restarted
+	if (_IsLivingInDeskbar() == false) {
+		_AddToDeskbar(); // calls _SendStatus() when successful
+		return;
+	}
+
 	BMessenger* replMessenger = _ReplicantMessenger();
 	if (replMessenger != NULL) {
 		if (replMessenger->IsValid() == true)
@@ -434,13 +460,6 @@ KeyCursorFilter::_Toggle()
 {
 	fToggleOn = !fToggleOn;
 	beep();
-
-	// re-add replicant if it got lost, e.g. Deskbar was restarted
-	BDeskbar deskbar;
-	bool inDeskbar = deskbar.HasItem(REPLICANT_VIEW_NAME);
-	bool enabled = fPrefs.GetReplicant();
-	if (enabled && !inDeskbar)
-		_AddToDeskbar();
 
 	_SendStatus();
 }

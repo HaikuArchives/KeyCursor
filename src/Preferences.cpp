@@ -43,7 +43,7 @@ Preferences::SetToDefault()
 {
 	SetToggleModMask(GetDefaultToggleModMask());
 	SetClickKeyMask(GetDefaultClickKeyMask());
-	SetReplicantToDefault();
+	SetReplicantEnabledToDefault();
 	// SetEnabledToDefault();
 	SetDefaultAcceleration();
 

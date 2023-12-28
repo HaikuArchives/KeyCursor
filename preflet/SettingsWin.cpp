@@ -53,7 +53,7 @@ SettingsWin::SettingsWin()
 	// Deskbar replicant checkbox
 	fReplicantBox = new BCheckBox("enable", B_TRANSLATE("Show Deskbar icon"),
 			new BMessage(REPLICANT_CHANGED));
-	fReplicantBox->SetValue(fPrefs.GetReplicant());
+	fReplicantBox->SetValue(fPrefs.GetReplicantEnabled());
 	fReplicantBox->MakeFocus(true);
 
 	// Deskbar replicant icon button
@@ -151,7 +151,7 @@ SettingsWin::MessageReceived(BMessage* message)
 
 		case REPLICANT_CHANGED:
 		{
-			fPrefs.SetReplicant(fReplicantBox->Value());
+			fPrefs.SetReplicantEnabled(fReplicantBox->Value());
 			fPrefs.Save();
 			_SendMessageToFilter(PREFS_CHANGED);
 		} break;
