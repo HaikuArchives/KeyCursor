@@ -126,7 +126,7 @@ KeyCursorDevice::Control(const char* device, void* cookie, uint32 code, BMessage
 	BInputServerDevice::Control(device, cookie, code, message);
 	if (code == B_CLICK_SPEED_CHANGED) {
 		status_t res = get_click_speed(&fClickSpeed);
-		if (res != B_OK or fClickSpeed < 100000) {
+		if (res != B_OK || fClickSpeed < 100000) {
 			syslog(LOG_WARNING, "KeyCursorDevice::Control(): using default value for fClickSpeed.");
 			fClickSpeed = 100000; // 0.1 secs should be the minumum value according to the BeBook.
 		}

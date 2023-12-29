@@ -112,7 +112,7 @@ SYMBOLS :=
 DEBUGGER :=
 
 #	Specify any additional compiler flags to be used.
-COMPILER_FLAGS = -Wall -Wextra -Wundef -Wshadow -Wmissing-declarations -Wredundant-decls -Wno-unused
+COMPILER_FLAGS = -Wall -Wno-multichar -Wundef -Wmissing-declarations -Wredundant-decls -Wno-unused
 
 #	Specify any additional linker flags to be used.
 LINKER_FLAGS =
