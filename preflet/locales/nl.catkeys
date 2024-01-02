@@ -1,0 +1,21 @@
+1	Dutch	application/x-vnd.OscarL-KeyCursorSettings	2801326990
+About…	Replicant		Over…
+Preferences…	Replicant		Instellingen…
+Acceleration	SettingsWindow		Versnelling
+Current toggle state:	SettingsWindow		Huidige schakel status:
+KeyCursor preferences	SettingsWindow		KeyCursor instellingen
+Max	SettingsWindow		Max
+Min	SettingsWindow		Min
+off	SettingsWindow	Status as in on/off	Uit
+on	SettingsWindow	Status as in on/off	Aan
+Show Deskbar icon	SettingsWindow		Toon Deskbar icoon
+Toggle keys	SettingsWindow		Toggle toetsen
+Command	ModifierBox		Commando
+Control	ModifierBox		Controle
+Menu	ModifierBox		Menu
+Option	ModifierBox		Optie
+Shift	ModifierBox		Shift
+KeyCursor	System name		KeyCursor
+KeyCursor lets you control the mouse pointer with the keyboard.\nIn the preference window, you choose the modifier key combination that will toggle control on/off.\nWhen toggled on, the cursor keys will move the mouse pointer.\nHit SPACE for a left-click, SHIFT+SPACE for a right-click.	AboutHelp		KeyCursor laat je toe de muisaanwijzer te controleren met het toetsenbord.\nIn het instellingsvenster kies je de toetsencombinatie welke de controle aan/uit zet.\nIndien ingeschakeld bedienen de cursor toetsen de muis.\nDuw op SPATIE voor een linkse-click, SHIFT+SPATIE voor een rechts-click.
+Nathan Schrenk for his BeNewsletter article	AboutHelp		Nathan Schrenk voor zijn BeNewsletter artikel
+Thomas Thiriez for his EasyMove app	AboutHelp		Thomas Thiriez voor zijn EasyMove toepassing

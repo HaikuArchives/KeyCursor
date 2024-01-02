@@ -1,0 +1,21 @@
+1	Catalan	application/x-vnd.OscarL-KeyCursorSettings	2801326990
+About…	Replicant		Quant a...
+Preferences…	Replicant		Preferències…
+Acceleration	SettingsWindow		Acceleració
+Current toggle state:	SettingsWindow		Estat actual de commutació:
+KeyCursor preferences	SettingsWindow		Preferències del Cursor de teclat
+Max	SettingsWindow		Màx.
+Min	SettingsWindow		Mín.
+off	SettingsWindow	Status as in on/off	desactivat
+on	SettingsWindow	Status as in on/off	activat
+Show Deskbar icon	SettingsWindow		Mostra la icona de la barra d'escriptori.
+Toggle keys	SettingsWindow		Commutació de tecles
+Command	ModifierBox		Ordre
+Control	ModifierBox		Control
+Menu	ModifierBox		Menú
+Option	ModifierBox		Opció
+Shift	ModifierBox		Maj.
+KeyCursor	System name		Cursor de teclat
+KeyCursor lets you control the mouse pointer with the keyboard.\nIn the preference window, you choose the modifier key combination that will toggle control on/off.\nWhen toggled on, the cursor keys will move the mouse pointer.\nHit SPACE for a left-click, SHIFT+SPACE for a right-click.	AboutHelp		El Cursor de teclat permet controlar el punter del ratolí amb el teclat.\nA la finestra de preferències, trieu la combinació de tecles modificadores que activarà/desactivarà el control.\nQuan està activat, les tecles del cursor mouran el punter del ratolí.\nPremeu ESPAI per fer un clic esquerre, MAJÚS+ESPAI per fer clic amb el botó dret.
+Nathan Schrenk for his BeNewsletter article	AboutHelp		Nathan Schrenk pel seu article de BeNewsletter
+Thomas Thiriez for his EasyMove app	AboutHelp		Thomas Thiriez per la seva aplicació EasyMove

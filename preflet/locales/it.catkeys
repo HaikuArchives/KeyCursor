@@ -1,0 +1,21 @@
+1	Italian	application/x-vnd.OscarL-KeyCursorSettings	2801326990
+About…	Replicant		Informazioni…
+Preferences…	Replicant		Preferenze…
+Acceleration	SettingsWindow		Accelerazione
+Current toggle state:	SettingsWindow		Stato corrente di scambio:
+KeyCursor preferences	SettingsWindow		Preferenze di KeyCursor
+Max	SettingsWindow		Max
+Min	SettingsWindow		Min
+off	SettingsWindow	Status as in on/off	spento
+on	SettingsWindow	Status as in on/off	acceso
+Show Deskbar icon	SettingsWindow		Mostra icona sulla Deskbar
+Toggle keys	SettingsWindow		Scambia i tasti
+Command	ModifierBox		Comando
+Control	ModifierBox		Control
+Menu	ModifierBox		Menu
+Option	ModifierBox		Opzione
+Shift	ModifierBox		Maiuscole
+KeyCursor	System name		KeyCursor
+KeyCursor lets you control the mouse pointer with the keyboard.\nIn the preference window, you choose the modifier key combination that will toggle control on/off.\nWhen toggled on, the cursor keys will move the mouse pointer.\nHit SPACE for a left-click, SHIFT+SPACE for a right-click.	AboutHelp		KeyCursor lets you control the mouse pointer with the keyboard.\nIn the preference window, you choose the modifier key combination that will toggle control on/off.\nWhen toggled on, the cursor keys will move the mouse pointer.\nHit SPACE for a left-click, SHIFT+SPACE for a right-click.
+Nathan Schrenk for his BeNewsletter article	AboutHelp		Nathan Schrenk per il suo articolo su BeNewsletter
+Thomas Thiriez for his EasyMove app	AboutHelp		Thomas Thiriez per la sua app EasyMove

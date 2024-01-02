@@ -1,0 +1,21 @@
+1	Turkish	application/x-vnd.OscarL-KeyCursorSettings	2801326990
+About…	Replicant		Hakkında…
+Preferences…	Replicant		Tercihler…
+Acceleration	SettingsWindow		İvmelendirme
+Current toggle state:	SettingsWindow		Geçerli durum:
+KeyCursor preferences	SettingsWindow		KeyCursor tercihleri
+Max	SettingsWindow		En yüksek
+Min	SettingsWindow		En düşük
+off	SettingsWindow	Status as in on/off	Kapalı
+on	SettingsWindow	Status as in on/off	Açık
+Show Deskbar icon	SettingsWindow		Masaüstü çubuğu simgesini göster
+Toggle keys	SettingsWindow		Düğmeleri aç/kapat
+Command	ModifierBox		Komut
+Control	ModifierBox		Kontrol
+Menu	ModifierBox		Menü
+Option	ModifierBox		Seçenek
+Shift	ModifierBox		Üst karakter
+KeyCursor	System name		KeyCursor
+KeyCursor lets you control the mouse pointer with the keyboard.\nIn the preference window, you choose the modifier key combination that will toggle control on/off.\nWhen toggled on, the cursor keys will move the mouse pointer.\nHit SPACE for a left-click, SHIFT+SPACE for a right-click.	AboutHelp		KeyCursor, fare işaretçisini klavyeyle hareket ettirmenize olanak tanır.\nTercihler penceresinde, denetimi açıp kapatmanızı sağlayacak değiştirici düğme kombinasyonunu tanımlarsınız.\nAçıldığında, imleç düğmeleri fare işaretçisini hareket ettirir.\nSol tık için BOŞLUK, sağ tık için ÜST KARAKTER+BOŞLUK düğmelerini kullanın.
+Nathan Schrenk for his BeNewsletter article	AboutHelp		Nathan Schrenk, BeNewsletter yazısı için
+Thomas Thiriez for his EasyMove app	AboutHelp		Thomas Thiriez, EasyMove uygulaması için
