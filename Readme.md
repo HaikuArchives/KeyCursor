@@ -75,17 +75,20 @@ input_server device hacking efforts.
 
 Newer versions, if any, will be available here: https://github.com/HaikuArchives/KeyCursor
 
-1.2 Haiku-only from now on...
+#### 1.2 Haiku-only from now on...
 
-- Added Deskbar replicant.
-- Added layout management and localization.
-- Added status view to preflet.
-- Added vector icons.
-- Changed settings format (flattened BMessage to be future proof).
-- Minor changes and cleanups.
+* Added layout management and translations (ca,de,es,fr,it,nl,tr)
+* Added Deskbar replicant
+* Added about window incl. help text
+* Preferences:
+  + Added status view + icon
+  + Added checkbox to en/disable replicant
+  + Remove checkbox to en/disable device/filter
+* Changed settings format, old settings are lost.
+* Licensing new code under MIT, rest stays BeSampleLicense
+* Other changes and cleanups
 
-
-1.1 First version:
+#### 1.1 First version:
 
 For BeOS (2004/04/16):
 - http://www.bebits.com/apps/1941/

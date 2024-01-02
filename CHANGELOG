@@ -1,0 +1,16 @@
+v1.2
+
+* Added layout management and translations (ca,de,es,fr,it,nl,tr)
+* Added Deskbar replicant
+* Added about window incl. help text
+* Preferences:
+  + Added status view + icon
+  + Added checkbox to en/disable replicant
+  + Remove checkbox to en/disable device/filter
+* Changed settings format, old settings are lost.
+* Licensing new code under MIT, rest stays BeSampleLicense
+* Other changes and cleanups
+
+v1.1
+
+* First release after initial import.
